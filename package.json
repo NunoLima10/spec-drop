@@ -1,0 +1,34 @@
+{
+  "name": "spec-drop",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Publish Markdown-based technical documentation as polished shareable web pages.",
+  "license": "MIT",
+  "packageManager": "pnpm@10.28.2",
+  "scripts": {
+    "dev": "pnpm --filter @specdrop/web dev",
+    "web:dev": "pnpm --filter @specdrop/web dev",
+    "web:build": "pnpm --filter @specdrop/web build",
+    "web:typecheck": "pnpm --filter @specdrop/web typecheck",
+    "web:test": "pnpm --filter @specdrop/web test",
+    "build": "pnpm -r --if-present build",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "biome lint .",
+    "format": "biome format . --write",
+    "check": "biome check .",
+    "test": "pnpm -r --if-present test",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:reset": "docker compose down -v && docker compose up -d",
+    "db:generate": "pnpm --filter @specdrop/db db:generate",
+    "db:migrate": "pnpm --filter @specdrop/db db:migrate",
+    "db:push": "pnpm --filter @specdrop/db db:push",
+    "db:check": "pnpm --filter @specdrop/db db:check",
+    "db:studio": "pnpm --filter @specdrop/db db:studio"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "typescript": "catalog:"
+  }
+}

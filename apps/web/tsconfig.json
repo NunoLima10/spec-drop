@@ -1,0 +1,17 @@
+{
+  "extends": "@specdrop/tsconfig/react",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDirs": [".", "./.react-router/types"],
+    "paths": {
+      "~/*": ["./app/*"]
+    }
+  },
+  "include": [
+    ".react-router/types/**/*",
+    "app/**/*",
+    "react-router.config.ts",
+    "vite.config.ts",
+    "workers/**/*"
+  ]
+}

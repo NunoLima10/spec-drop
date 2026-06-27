@@ -1,0 +1,4 @@
+{
+  "extends": "@specdrop/tsconfig/node",
+  "include": ["drizzle.config.ts", "src/**/*.ts"]
+}

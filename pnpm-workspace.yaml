@@ -1,0 +1,37 @@
+packages:
+  - apps/*
+  - packages/*
+
+onlyBuiltDependencies:
+  - esbuild
+
+catalog:
+  '@biomejs/biome': ^2.3.14
+  '@hono/trpc-server': ^0.4.0
+  '@react-router/dev': ^7.6.3
+  '@tailwindcss/vite': ^4.1.4
+  '@trpc/client': ^11.0.0
+  '@trpc/server': ^11.0.0
+  '@types/node': ^24.0.4
+  '@types/react': ^19.0.10
+  '@types/react-dom': ^19.0.4
+  '@vitejs/plugin-react': ^5.1.2
+  drizzle-kit: ^0.31.0
+  drizzle-orm: ^0.44.0
+  dotenv: ^17.0.0
+  hono: ^4.8.2
+  isbot: ^5.1.26
+  postgres: ^3.4.7
+  react: ^19.0.0
+  react-dom: ^19.0.0
+  react-router: ^7.6.3
+  tailwindcss: ^4.1.4
+  tsx: ^4.20.3
+  typescript: ^5.9.3
+  vite: ^7.3.0
+  vite-tsconfig-paths: ^5.1.4
+  vitest: ^4.0.16
+  zod: ^4.2.1
+
+allowBuilds:
+  esbuild: true
