@@ -1,0 +1,31 @@
+# Reference projects cloned for local planning only
+/examples-npm-monorepo/
+/react-router-hono-fullstack-template/
+
+# Dependencies and package manager caches
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+.output/
+.vite/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
