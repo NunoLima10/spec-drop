@@ -13,10 +13,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@specdrop/db": "workspace:*",
+    "@specdrop/markdown": "workspace:*",
     "@trpc/server": "catalog:",
+    "drizzle-orm": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "catalog:",
     "@specdrop/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:"
