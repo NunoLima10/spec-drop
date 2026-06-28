@@ -1,0 +1,18 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "specdrop",
+  "compatibility_date": "2026-06-27",
+  "main": "./workers/app.ts",
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "specdrop-dev",
+      "database_id": "76b3f965-36cb-40da-a273-fc24466ffabe",
+      "migrations_dir": "../../packages/db/src/db/migrations"
+    }
+  ],
+  "upload_source_maps": true
+}

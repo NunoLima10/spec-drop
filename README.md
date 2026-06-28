@@ -6,7 +6,7 @@ technical documentation as fast, polished, shareable web pages.
 The core product loop is:
 
 1. Upload or drop a Markdown file.
-2. Store the raw Markdown in PostgreSQL.
+2. Store the raw Markdown in Cloudflare D1.
 3. Render it safely in the web UI.
 4. Share the generated URL.
 
@@ -16,11 +16,11 @@ This repository is a pnpm monorepo.
 
 ```text
 apps/
-  web/            React Router, Hono, Vite web app
+  web/            React Router, Hono, Vite, Cloudflare Worker app
 packages/
   api/            tRPC routers and typed API contracts
   config/         Shared environment parsing
-  db/             Drizzle schema, client, and migration workflow
+  db/             Drizzle D1 schema and migration workflow
   markdown/       Shared Markdown utilities
   tsconfig/       Shared TypeScript configuration
 ```
@@ -39,10 +39,10 @@ Copy the local environment template:
 cp .env.example .env
 ```
 
-Start local PostgreSQL:
+Apply D1 migrations to the local Wrangler database:
 
 ```sh
-pnpm run docker:up
+pnpm run d1:migrations:local
 ```
 
 Run the app:
@@ -63,11 +63,9 @@ Useful local URLs once the app is running:
 /trpc/*     tRPC endpoint mounted by Hono
 ```
 
-Stop local PostgreSQL:
-
-```sh
-pnpm run docker:down
-```
+Stop the local app:
+Use `Ctrl+C` to stop the app process. No local Docker service is required for
+the D1 setup.
 
 ## Checks
 
@@ -80,23 +78,47 @@ pnpm run test
 
 ## Database
 
-The database package owns Drizzle schema and migration commands.
+The database package owns the Drizzle D1 schema and generated SQL migrations.
 
 ```sh
 pnpm run db:generate
-pnpm run db:migrate
-pnpm run db:push
 pnpm run db:check
 pnpm run db:studio
+pnpm run d1:migrations:local
+pnpm run d1:migrations:remote
 ```
 
 The initial `shares` table stores raw Markdown in the `content` column. Rendered
 HTML is not stored as the canonical document format.
 
-For a fresh local database, start PostgreSQL, then generate and apply migrations:
+For a fresh local D1 database, generate and apply migrations:
 
 ```sh
-pnpm run docker:up
 pnpm run db:generate
-pnpm run db:migrate
+pnpm run d1:migrations:local
+```
+
+The Cloudflare D1 binding lives in `apps/web/wrangler.jsonc`. The committed
+`database_id` identifies the D1 database and is not an API secret. Do not commit
+API tokens; authenticate locally with `wrangler login` or use a shell-level
+`CLOUDFLARE_API_TOKEN`.
+
+## Deployment
+
+Build and deploy the Worker:
+
+```sh
+pnpm run web:deploy
+```
+
+Apply migrations to the remote D1 database:
+
+```sh
+pnpm run d1:migrations:remote
+```
+
+The first deployment was verified at:
+
+```text
+https://specdrop.codeisland1460.workers.dev
 ```

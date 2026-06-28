@@ -7,7 +7,13 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!**/*.html", "!**/.react-router", "!!**/dist"]
+    "includes": [
+      "**",
+      "!**/*.html",
+      "!**/.react-router",
+      "!**/.wrangler",
+      "!!**/dist"
+    ]
   },
   "formatter": {
     "enabled": true,

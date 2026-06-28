@@ -7,7 +7,7 @@ contributors to run and review.
 
 1. Install dependencies with `pnpm install`.
 2. Copy `.env.example` to `.env`.
-3. Start PostgreSQL with `pnpm run docker:up` when working on database flows.
+3. Apply local D1 migrations with `pnpm run d1:migrations:local` when working on database flows.
 4. Run checks before opening a pull request.
 
 ```sh
@@ -21,7 +21,8 @@ files, or generated reference project changes.
 
 ## Architecture Notes
 
-- Store raw Markdown in PostgreSQL.
+- Store raw Markdown in Cloudflare D1.
+- Use Cloudflare D1 as the MVP SQL database.
 - Render and sanitize Markdown in the web UI.
 - Keep package boundaries clear.
 - Prefer shared packages for reusable contracts and utilities.

@@ -12,6 +12,7 @@ build/
 .output/
 .vite/
 .react-router/
+.wrangler/
 *.tsbuildinfo
 
 # Environment files

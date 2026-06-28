@@ -3,7 +3,11 @@ import { appRouter } from "@specdrop/api";
 import { Hono } from "hono";
 import { createRequestHandler } from "react-router";
 
-const app = new Hono();
+type Bindings = {
+  DB: D1Database;
+};
+
+const app = new Hono<{ Bindings: Bindings }>();
 
 app.use(
   "/trpc/*",

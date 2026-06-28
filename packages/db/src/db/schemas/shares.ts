@@ -1,24 +1,18 @@
-import {
-  boolean,
-  integer,
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const shares = pgTable("shares", {
-  id: uuid("id").primaryKey().defaultRandom(),
+export const shares = sqliteTable("shares", {
+  id: text("id").primaryKey(),
   slug: text("slug").notNull().unique(),
   title: text("title"),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
+  createdAt: text("created_at").notNull().default(sql`(CURRENT_TIMESTAMP)`),
+  expiresAt: text("expires_at"),
+  readAt: text("read_at"),
+  deleteAfterRead: integer("delete_after_read", { mode: "boolean" })
     .notNull()
-    .defaultNow(),
-  expiresAt: timestamp("expires_at", { withTimezone: true }),
-  readAt: timestamp("read_at", { withTimezone: true }),
-  deleteAfterRead: boolean("delete_after_read").notNull().default(false),
+    .default(false),
   maxViews: integer("max_views"),
   currentViews: integer("current_views").notNull().default(0),
-  deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  deletedAt: text("deleted_at"),
 });

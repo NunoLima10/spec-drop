@@ -1,4 +1,7 @@
 {
   "extends": "@specdrop/tsconfig/node",
+  "compilerOptions": {
+    "types": ["node", "@cloudflare/workers-types"]
+  },
   "include": ["drizzle.config.ts", "src/**/*.ts"]
 }
