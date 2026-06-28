@@ -18,6 +18,7 @@
   "dependencies": {
     "@hono/trpc-server": "catalog:",
     "@specdrop/api": "workspace:*",
+    "@specdrop/db": "workspace:*",
     "@trpc/client": "catalog:",
     "hono": "catalog:",
     "isbot": "catalog:",

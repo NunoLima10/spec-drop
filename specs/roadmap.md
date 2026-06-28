@@ -1,6 +1,6 @@
 # Roadmap
 
-## Phase 0: Project Foundation
+## Phase 0: Project Foundation - Complete
 
 Goal: turn the current reference material into an executable pnpm monorepo.
 
@@ -30,23 +30,34 @@ Exit criteria:
 - The project has a clear package structure that future features can build on.
 - Contributors can understand setup, architecture, and changelog expectations from the repository docs.
 
+Status: complete.
+
 ## Phase 1: Core Share MVP
 
 Goal: upload Markdown, store it, render it, and share it by URL.
 
 Deliverables:
 
-- Upload or paste Markdown from the web UI.
-- Validate Markdown content before persistence.
-- Create a share record in PostgreSQL through Drizzle.
-- Generate a public slug.
-- Return a shareable URL.
-- Implement public share page.
+- Upload or paste Markdown from the web UI. `In progress`
+- Validate Markdown content before persistence. `In progress`
+- Create a share record through Drizzle. `In progress`
+- Generate a public slug. `In progress`
+- Return a shareable URL. `In progress`
+- Implement public share page. `In progress`
+- View the stored raw Markdown document. `In progress`
+- Add copy URL action. `In progress`
+- Add not found and invalid document states. `In progress`
 - Render Markdown from raw stored content.
-- Add copy URL action.
-- Add not found and invalid document states.
 - Add responsive reading layout.
 - Add dark mode.
+
+Current phase-one boundary:
+
+- Upload or choose a `.md` or `.markdown` file.
+- Generate a public share URL.
+- Open the share URL and view the stored Markdown content.
+- Defer polished Markdown rendering and visual treatment until after the
+  upload-generate-view loop is working end to end.
 
 Exit criteria:
 

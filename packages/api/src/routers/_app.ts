@@ -1,8 +1,10 @@
 import { router } from "../trpc.js";
 import { healthRouter } from "./health.js";
+import { shareRouter } from "./share.js";
 
 export const appRouter = router({
   health: healthRouter,
+  share: shareRouter,
 });
 
 export type AppRouter = typeof appRouter;

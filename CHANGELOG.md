@@ -4,6 +4,7 @@
 
 ### Added
 
+- Add the first Markdown upload, share URL generation, and raw share viewing flow.
 - Add Cloudflare Worker deployment scripts and D1 migration workflow.
 - Add root scripts and setup documentation for running the web app and database workflow.
 - Add the pnpm monorepo foundation with React Router, Hono, tRPC, Drizzle, and contributor tooling.
@@ -15,4 +16,5 @@
 
 ### Fixed
 
+- Surface share storage failures instead of retrying non-slug database errors.
 - Prevent favicon browser requests from logging React Router 404 errors during development.

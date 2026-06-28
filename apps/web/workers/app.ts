@@ -1,5 +1,6 @@
 import { trpcServer } from "@hono/trpc-server";
 import { appRouter } from "@specdrop/api";
+import { createDb } from "@specdrop/db";
 import { Hono } from "hono";
 import { createRequestHandler } from "react-router";
 
@@ -13,6 +14,10 @@ app.use(
   "/trpc/*",
   trpcServer({
     router: appRouter,
+    createContext: (_opts, context) => ({
+      db: createDb(context.env.DB),
+      origin: new URL(context.req.url).origin,
+    }),
   }),
 );
 

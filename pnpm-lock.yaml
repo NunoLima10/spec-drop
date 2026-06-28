@@ -104,6 +104,9 @@ importers:
       '@specdrop/api':
         specifier: workspace:*
         version: link:../../packages/api
+      '@specdrop/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@trpc/client':
         specifier: 'catalog:'
         version: 11.18.0(@trpc/server@11.18.0(typescript@5.9.3))(typescript@5.9.3)
@@ -171,13 +174,25 @@ importers:
 
   packages/api:
     dependencies:
+      '@specdrop/db':
+        specifier: workspace:*
+        version: link:../db
+      '@specdrop/markdown':
+        specifier: workspace:*
+        version: link:../markdown
       '@trpc/server':
         specifier: 'catalog:'
         version: 11.18.0(typescript@5.9.3)
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 0.44.7(@cloudflare/workers-types@4.20260626.1)(postgres@3.4.9)
       zod:
         specifier: 'catalog:'
         version: 4.4.3
     devDependencies:
+      '@cloudflare/workers-types':
+        specifier: 'catalog:'
+        version: 4.20260626.1
       '@specdrop/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
