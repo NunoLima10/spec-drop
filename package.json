@@ -1,0 +1,33 @@
+{
+  "name": "spec-drop",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Publish Markdown-based technical documentation as polished shareable web pages.",
+  "license": "MIT",
+  "packageManager": "pnpm@10.28.2",
+  "scripts": {
+    "dev": "pnpm --filter @specdrop/web run dev",
+    "web:dev": "pnpm --filter @specdrop/web run dev",
+    "web:build": "pnpm --filter @specdrop/web run build",
+    "web:deploy": "pnpm --filter @specdrop/web run deploy",
+    "web:cf-typegen": "pnpm --filter @specdrop/web run cf-typegen",
+    "web:typecheck": "pnpm --filter @specdrop/web run typecheck",
+    "web:test": "pnpm --filter @specdrop/web run test",
+    "build": "pnpm -r --if-present build",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "biome lint .",
+    "format": "biome format . --write",
+    "check": "biome check .",
+    "test": "pnpm -r --if-present test",
+    "db:generate": "pnpm --filter @specdrop/db run db:generate",
+    "db:check": "pnpm --filter @specdrop/db run db:check",
+    "db:studio": "pnpm --filter @specdrop/db run db:studio",
+    "d1:migrations:local": "pnpm --filter @specdrop/web run d1:migrations:local",
+    "d1:migrations:remote": "pnpm --filter @specdrop/web run d1:migrations:remote"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "typescript": "catalog:"
+  }
+}

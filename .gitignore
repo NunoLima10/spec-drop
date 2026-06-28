@@ -11,6 +11,9 @@ dist/
 build/
 .output/
 .vite/
+.react-router/
+.wrangler/
+*.tsbuildinfo
 
 # Environment files
 .env
