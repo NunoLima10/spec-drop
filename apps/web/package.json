@@ -16,15 +16,25 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@bytemd/plugin-breaks": "catalog:",
+    "@bytemd/plugin-gemoji": "catalog:",
+    "@bytemd/plugin-gfm": "catalog:",
+    "@bytemd/plugin-highlight-ssr": "catalog:",
+    "@bytemd/plugin-math": "catalog:",
+    "@bytemd/plugin-mermaid": "catalog:",
+    "@bytemd/react": "catalog:",
     "@hono/trpc-server": "catalog:",
     "@specdrop/api": "workspace:*",
     "@specdrop/db": "workspace:*",
     "@trpc/client": "catalog:",
+    "bytemd": "catalog:",
     "hono": "catalog:",
     "isbot": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-router": "catalog:"
+    "react-router": "catalog:",
+    "rehype-external-links": "catalog:",
+    "rehype-slug": "catalog:"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "catalog:",
