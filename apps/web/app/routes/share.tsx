@@ -12,6 +12,10 @@ type ShareState =
         title: string | null;
         content: string;
         createdAt: string;
+        expiresAt: string | null;
+        deleteAfterRead: boolean;
+        maxViews: number | null;
+        currentViews: number;
       };
     };
 
@@ -83,6 +87,34 @@ export default function Share() {
         <p className="mt-2 text-slate-500 text-sm dark:text-slate-400">
           Created {new Date(state.share.createdAt).toLocaleString()}
         </p>
+        <dl className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          <div className="flex gap-1">
+            <dt className="text-slate-500 dark:text-slate-400">Views:</dt>
+            <dd>{state.share.currentViews}</dd>
+          </div>
+          <div className="flex gap-1">
+            <dt className="text-slate-500 dark:text-slate-400">Expires:</dt>
+            <dd>
+              {state.share.expiresAt
+                ? new Date(state.share.expiresAt).toLocaleString()
+                : "Never"}
+            </dd>
+          </div>
+          {state.share.maxViews ? (
+            <div className="flex gap-1">
+              <dt className="text-slate-500 dark:text-slate-400">Max views:</dt>
+              <dd>{state.share.maxViews}</dd>
+            </div>
+          ) : null}
+          {state.share.deleteAfterRead ? (
+            <div className="flex gap-1">
+              <dt className="text-slate-500 dark:text-slate-400">
+                Delete-after-read:
+              </dt>
+              <dd>On</dd>
+            </div>
+          ) : null}
+        </dl>
       </header>
 
       <MarkdownRenderer content={state.share.content} />

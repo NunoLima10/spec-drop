@@ -10,7 +10,8 @@
     }
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@specdrop/db": "workspace:*",
@@ -23,6 +24,7 @@
     "@cloudflare/workers-types": "catalog:",
     "@specdrop/tsconfig": "workspace:*",
     "@types/node": "catalog:",
+    "vitest": "catalog:",
     "typescript": "catalog:"
   }
 }

@@ -4,6 +4,7 @@
 
 ### Added
 
+- Add ephemeral sharing controls with expirations, delete-after-read, max views, view tracking, ownerless deletion, and scheduled cleanup.
 - Add ByteMD rendering with GFM, line breaks, gemoji, math, syntax highlighting, Mermaid, heading anchors, external-link handling, and sanitizer configuration.
 - Add the first Markdown upload, share URL generation, and rendered share viewing flow.
 - Add Cloudflare Worker deployment scripts and D1 migration workflow.
@@ -13,6 +14,8 @@
 
 ### Changed
 
+- Advance the roadmap from Phase 3 ephemeral sharing controls to Phase 4 product polish.
+- Advance the roadmap from Phase 2 Markdown quality and safety to Phase 3 ephemeral sharing controls.
 - Advance the roadmap from Phase 1 Core Share MVP to Phase 2 Markdown quality and safety.
 - Switch the initial database target from PostgreSQL to Cloudflare D1.
 

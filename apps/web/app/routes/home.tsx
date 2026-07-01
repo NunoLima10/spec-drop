@@ -16,9 +16,16 @@ export function meta(_: Route.MetaArgs) {
 export default function Home() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [expiresIn, setExpiresIn] = useState<
+    "never" | "1h" | "24h" | "7d" | "30d"
+  >("never");
+  const [deleteAfterRead, setDeleteAfterRead] = useState(false);
+  const [maxViews, setMaxViews] = useState("");
   const [shareUrl, setShareUrl] = useState("");
+  const [shareSlug, setShareSlug] = useState("");
   const [error, setError] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.currentTarget.files?.[0];
@@ -42,14 +49,19 @@ export default function Home() {
     setIsCreating(true);
     setError("");
     setShareUrl("");
+    setShareSlug("");
 
     try {
       const share = await trpc.share.create.mutate({
         title: title || undefined,
         content,
+        expiresIn,
+        deleteAfterRead,
+        maxViews: maxViews ? Number(maxViews) : undefined,
       });
 
       setShareUrl(share.url);
+      setShareSlug(share.slug);
     } catch (createError) {
       setError(
         createError instanceof Error
@@ -67,6 +79,29 @@ export default function Home() {
     }
 
     await navigator.clipboard.writeText(shareUrl);
+  }
+
+  async function handleDeleteShare() {
+    if (!shareSlug) {
+      return;
+    }
+
+    setIsDeleting(true);
+    setError("");
+
+    try {
+      await trpc.share.delete.mutate({ slug: shareSlug });
+      setShareUrl("");
+      setShareSlug("");
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Could not delete the share.",
+      );
+    } finally {
+      setIsDeleting(false);
+    }
   }
 
   return (
@@ -113,6 +148,59 @@ export default function Home() {
           />
         </label>
 
+        <fieldset className="grid gap-4 rounded border border-slate-200 p-4 dark:border-slate-800 sm:grid-cols-3">
+          <legend className="px-1 font-medium text-sm">Sharing controls</legend>
+
+          <label className="flex flex-col gap-2">
+            <span className="font-medium text-sm">Expires</span>
+            <select
+              className="rounded border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-zinc-950"
+              onChange={(event) =>
+                setExpiresIn(
+                  event.currentTarget.value as
+                    | "never"
+                    | "1h"
+                    | "24h"
+                    | "7d"
+                    | "30d",
+                )
+              }
+              value={expiresIn}
+            >
+              <option value="never">Never</option>
+              <option value="1h">In 1 hour</option>
+              <option value="24h">In 24 hours</option>
+              <option value="7d">In 7 days</option>
+              <option value="30d">In 30 days</option>
+            </select>
+          </label>
+
+          <label className="flex flex-col gap-2">
+            <span className="font-medium text-sm">Max views</span>
+            <input
+              className="rounded border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-zinc-950"
+              min={1}
+              max={10_000}
+              onChange={(event) => setMaxViews(event.currentTarget.value)}
+              placeholder="No limit"
+              type="number"
+              value={maxViews}
+            />
+          </label>
+
+          <label className="flex items-center gap-3 pt-7 text-sm">
+            <input
+              checked={deleteAfterRead}
+              className="size-4"
+              onChange={(event) =>
+                setDeleteAfterRead(event.currentTarget.checked)
+              }
+              type="checkbox"
+            />
+            Delete after first view
+          </label>
+        </fieldset>
+
         {error ? (
           <p className="rounded border border-red-200 bg-red-50 px-3 py-2 text-red-700 text-sm dark:border-red-950 dark:bg-red-950/40 dark:text-red-200">
             {error}
@@ -150,6 +238,14 @@ export default function Home() {
             >
               Open
             </a>
+            <button
+              className="rounded border border-red-200 px-4 py-2 font-medium text-red-700 text-sm disabled:cursor-not-allowed disabled:opacity-60 dark:border-red-950 dark:text-red-200"
+              disabled={isDeleting}
+              onClick={handleDeleteShare}
+              type="button"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </button>
           </div>
         </section>
       ) : null}
