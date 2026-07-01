@@ -14,9 +14,247 @@ body {
   color: #0f172a;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background: #09090b;
+    color: #f8fafc;
+  }
+}
+
+.specdrop-markdown .markdown-body {
+  color: #1e293b;
+  font-size: 1rem;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+
+.specdrop-markdown .markdown-body > *:first-child {
+  margin-top: 0;
+}
+
+.specdrop-markdown .markdown-body > *:last-child {
+  margin-bottom: 0;
+}
+
+.specdrop-markdown .markdown-body h1,
+.specdrop-markdown .markdown-body h2,
+.specdrop-markdown .markdown-body h3,
+.specdrop-markdown .markdown-body h4,
+.specdrop-markdown .markdown-body h5,
+.specdrop-markdown .markdown-body h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+  margin-top: 2rem;
+}
+
+.specdrop-markdown .markdown-body h1[id],
+.specdrop-markdown .markdown-body h2[id],
+.specdrop-markdown .markdown-body h3[id],
+.specdrop-markdown .markdown-body h4[id],
+.specdrop-markdown .markdown-body h5[id],
+.specdrop-markdown .markdown-body h6[id] {
+  scroll-margin-top: 2rem;
+}
+
+.specdrop-markdown .markdown-body h1 {
+  border-bottom: 1px solid #cbd5e1;
+  font-size: 2.25rem;
+  padding-bottom: 0.75rem;
+}
+
+.specdrop-markdown .markdown-body h2 {
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 1.75rem;
+  padding-bottom: 0.5rem;
+}
+
+.specdrop-markdown .markdown-body h3 {
+  font-size: 1.35rem;
+}
+
+.specdrop-markdown .markdown-body h4 {
+  font-size: 1.15rem;
+}
+
+.specdrop-markdown .markdown-body p,
+.specdrop-markdown .markdown-body blockquote,
+.specdrop-markdown .markdown-body ul,
+.specdrop-markdown .markdown-body ol,
+.specdrop-markdown .markdown-body table,
+.specdrop-markdown .markdown-body pre,
+.specdrop-markdown .markdown-body hr {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.specdrop-markdown .markdown-body a {
+  color: #0369a1;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.specdrop-markdown .markdown-body strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.specdrop-markdown .markdown-body ul,
+.specdrop-markdown .markdown-body ol {
+  padding-left: 1.75rem;
+}
+
+.specdrop-markdown .markdown-body ul {
+  list-style: disc;
+}
+
+.specdrop-markdown .markdown-body ol {
+  list-style: decimal;
+}
+
+.specdrop-markdown .markdown-body ul ul,
+.specdrop-markdown .markdown-body ol ul {
+  list-style: circle;
+}
+
+.specdrop-markdown .markdown-body ul ul ul,
+.specdrop-markdown .markdown-body ol ul ul {
+  list-style: square;
+}
+
+.specdrop-markdown .markdown-body li {
+  margin-bottom: 0.25rem;
+  padding-left: 0.25rem;
+}
+
+.specdrop-markdown .markdown-body li > p {
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.specdrop-markdown .markdown-body blockquote {
+  border-left: 0.25rem solid #cbd5e1;
+  color: #475569;
+  padding-left: 1rem;
+}
+
+.specdrop-markdown .markdown-body hr {
+  border: 0;
+  border-top: 1px solid #cbd5e1;
+}
+
+.specdrop-markdown .markdown-body code {
+  background: #e2e8f0;
+  border-radius: 0.25rem;
+  color: #0f172a;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.9em;
+  padding: 0.15rem 0.3rem;
+}
+
+.specdrop-markdown .markdown-body pre {
+  background: #0f172a;
+  border-radius: 0.5rem;
+  color: #e2e8f0;
+  overflow-x: auto;
+  padding: 1rem;
+}
+
+.specdrop-markdown .markdown-body pre code {
+  background: transparent;
+  color: inherit;
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  padding: 0;
+}
+
+.specdrop-markdown .markdown-body table {
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.specdrop-markdown .markdown-body th,
+.specdrop-markdown .markdown-body td {
+  border: 1px solid #cbd5e1;
+  padding: 0.5rem 0.75rem;
+}
+
+.specdrop-markdown .markdown-body th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.specdrop-markdown .markdown-body img {
+  max-width: 100%;
+}
+
+.specdrop-markdown .markdown-body .bytemd-mermaid {
+  overflow-x: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  .specdrop-markdown .markdown-body {
+    color: #e2e8f0;
+  }
+
+  .specdrop-markdown .markdown-body h1,
+  .specdrop-markdown .markdown-body h2,
+  .specdrop-markdown .markdown-body h3,
+  .specdrop-markdown .markdown-body h4,
+  .specdrop-markdown .markdown-body h5,
+  .specdrop-markdown .markdown-body h6,
+  .specdrop-markdown .markdown-body strong {
+    color: #f8fafc;
+  }
+
+  .specdrop-markdown .markdown-body h1,
+  .specdrop-markdown .markdown-body h2,
+  .specdrop-markdown .markdown-body hr {
+    border-color: #334155;
+  }
+
+  .specdrop-markdown .markdown-body a {
+    color: #7dd3fc;
+  }
+
+  .specdrop-markdown .markdown-body blockquote {
+    border-left-color: #475569;
+    color: #cbd5e1;
+  }
+
+  .specdrop-markdown .markdown-body code {
+    background: #1e293b;
+    color: #f8fafc;
+  }
+
+  .specdrop-markdown .markdown-body pre {
+    background: #020617;
+    color: #e2e8f0;
+  }
+
+  .specdrop-markdown .markdown-body th,
+  .specdrop-markdown .markdown-body td {
+    border-color: #334155;
+  }
+
+  .specdrop-markdown .markdown-body th {
+    background: #1e293b;
     color: #f8fafc;
   }
 }

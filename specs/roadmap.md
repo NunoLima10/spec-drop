@@ -32,21 +32,21 @@ Exit criteria:
 
 Status: complete.
 
-## Phase 1: Core Share MVP
+## Phase 1: Core Share MVP - Complete
 
 Goal: upload Markdown, store it, render it, and share it by URL.
 
 Deliverables:
 
-- Upload or paste Markdown from the web UI. `In progress`
-- Validate Markdown content before persistence. `In progress`
-- Create a share record through Drizzle. `In progress`
-- Generate a public slug. `In progress`
-- Return a shareable URL. `In progress`
-- Implement public share page. `In progress`
-- View the stored raw Markdown document. `In progress`
-- Add copy URL action. `In progress`
-- Add not found and invalid document states. `In progress`
+- Upload or paste Markdown from the web UI.
+- Validate Markdown content before persistence.
+- Create a share record through Drizzle.
+- Generate a public slug.
+- Return a shareable URL.
+- Implement public share page.
+- View the stored raw Markdown document.
+- Add copy URL action.
+- Add not found and invalid document states.
 - Render Markdown from raw stored content.
 - Add responsive reading layout.
 - Add dark mode.
@@ -65,7 +65,9 @@ Exit criteria:
 - Stored content remains raw Markdown.
 - The reading page supports common developer documentation patterns: headings, links, tables, lists, and code blocks.
 
-## Phase 2: Markdown Quality And Safety
+Status: complete.
+
+## Phase 2: Markdown Quality And Safety - Current
 
 Goal: make rendering good enough for real technical documents and safe enough for public links.
 
@@ -90,6 +92,8 @@ Exit criteria:
 - Unsafe HTML and unsafe attributes are stripped.
 - Mermaid diagrams render without breaking the page.
 - The app has tests for the most important rendering and sanitization cases.
+
+Status: active.
 
 ## Phase 3: Ephemeral Sharing Controls
 

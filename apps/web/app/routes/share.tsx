@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { MarkdownRenderer } from "../markdown-renderer";
 import { trpc } from "../trpc";
 
 type ShareState =
@@ -84,9 +85,7 @@ export default function Share() {
         </p>
       </header>
 
-      <pre className="whitespace-pre-wrap break-words font-mono text-sm leading-7">
-        {state.share.content}
-      </pre>
+      <MarkdownRenderer content={state.share.content} />
     </main>
   );
 }
