@@ -176,6 +176,7 @@ Deliverables:
 - Suggest reviewers or domains.
 - Ask questions about the document.
 - Generate or refine Mermaid diagrams.
+- User can add coments to the file
 
 Exit criteria:
 

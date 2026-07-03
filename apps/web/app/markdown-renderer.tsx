@@ -2,6 +2,7 @@ import type { ViewerProps } from "bytemd";
 import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
 import "bytemd/dist/index.css";
+import type { MarkdownOutlineItem } from "./markdown-plugins";
 
 type SanitizeSchema = Parameters<NonNullable<ViewerProps["sanitize"]>>[0];
 type MarkdownViewer = ComponentType<ViewerProps>;
@@ -33,7 +34,13 @@ function sanitize(defaultSchema: SanitizeSchema): SanitizeSchema {
   return defaultSchema;
 }
 
-export function MarkdownRenderer({ content }: { content: string }) {
+export function MarkdownRenderer({
+  content,
+  onOutlineChange,
+}: {
+  content: string;
+  onOutlineChange?: (outline: MarkdownOutlineItem[]) => void;
+}) {
   const [renderer, setRenderer] = useState<RendererState | null>(null);
 
   useEffect(() => {
@@ -51,7 +58,9 @@ export function MarkdownRenderer({ content }: { content: string }) {
         {
           anchorHeadersPlugin,
           externalLinksPlugin,
+          mermaidControlsPlugin,
           removeDuplicateClobberPrefix,
+          renderedHeadingOutlinePlugin,
           rewriteInternalHeadingLinks,
         },
       ] = await Promise.all([
@@ -79,6 +88,10 @@ export function MarkdownRenderer({ content }: { content: string }) {
             breaks(),
             gemoji(),
             mermaid({ theme: mermaidTheme }),
+            mermaidControlsPlugin(),
+            ...(onOutlineChange
+              ? [renderedHeadingOutlinePlugin({ onChange: onOutlineChange })]
+              : []),
             anchorHeadersPlugin({ prefix: clobberPrefix }),
             removeDuplicateClobberPrefix({ clobberPrefix }),
             rewriteInternalHeadingLinks({ clobberPrefix }),
@@ -93,7 +106,7 @@ export function MarkdownRenderer({ content }: { content: string }) {
     return () => {
       isCurrent = false;
     };
-  }, []);
+  }, [onOutlineChange]);
 
   if (!renderer) {
     return (

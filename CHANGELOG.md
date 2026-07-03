@@ -4,6 +4,8 @@
 
 ### Added
 
+- Add drag-and-drop Markdown upload, inferred Markdown titles, reading progress, estimated reading time, and a table of contents on shared pages.
+- Add zoom and panning controls for Mermaid diagrams in shared Markdown pages.
 - Add ephemeral sharing controls with expirations, delete-after-read, max views, view tracking, ownerless deletion, and scheduled cleanup.
 - Add ByteMD rendering with GFM, line breaks, gemoji, math, syntax highlighting, Mermaid, heading anchors, external-link handling, and sanitizer configuration.
 - Add the first Markdown upload, share URL generation, and rendered share viewing flow.
