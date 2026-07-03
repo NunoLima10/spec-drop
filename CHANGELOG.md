@@ -19,6 +19,7 @@
 
 ### Changed
 
+- Redesign error, not-found, and share loading states with focused SpecsDrop status layouts.
 - Redesign shared Markdown read pages with a cleaner dark layout and calmer document typography.
 - Move the preview Render/Code toggle above rendered Markdown content.
 - Change the empty Markdown uploader to remove the outer frame and place the drop prompt closer to the top.
