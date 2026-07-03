@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
+import { Textarea } from "~/components/ui/textarea";
 import { MarkdownRenderer } from "../markdown-renderer";
 import { trpc } from "../trpc";
 import {
@@ -333,7 +334,11 @@ function DropComposer({
 
   return (
     <form
-      className="rounded-xl border border-[rgba(216,236,248,0.16)] bg-[#070914] p-3 shadow-[inset_0_1px_1px_rgba(216,236,248,0.16),inset_0_24px_48px_rgba(168,216,245,0.05),0_16px_48px_rgba(0,0,0,0.42)] sm:p-4"
+      className={
+        hasContent
+          ? "rounded-xl border border-[rgba(216,236,248,0.16)] bg-[#070914] p-3 shadow-[inset_0_1px_1px_rgba(216,236,248,0.16),inset_0_24px_48px_rgba(168,216,245,0.05),0_16px_48px_rgba(0,0,0,0.42)] sm:p-4"
+          : ""
+      }
       onSubmit={handleSubmit}
     >
       {hasContent ? (
@@ -399,7 +404,7 @@ function MarkdownIngress({
       >
         <legend className="sr-only">Drop Markdown file</legend>
         <label
-          className="flex min-h-72 cursor-pointer flex-col items-center justify-center rounded-xl p-6 text-center sm:min-h-80"
+          className="flex min-h-72 cursor-pointer flex-col items-center justify-start rounded-xl p-6 pt-16 text-center sm:min-h-80 sm:pt-20"
           htmlFor="markdown-file"
         >
           <span className="flex size-14 items-center justify-center rounded-full bg-[#663af3] text-white shadow-[0_0_32px_rgba(102,58,243,0.4)]">
@@ -422,9 +427,9 @@ function MarkdownIngress({
         </label>
       </fieldset>
 
-      <Input
+      <Textarea
         aria-label="Paste Markdown"
-        className="mt-3 h-11 rounded-lg border-[rgba(216,236,248,0.72)] bg-[#070914] px-4 font-mono text-[#d1e4fa] text-sm placeholder:text-[#9da7ba]"
+        className="mt-3 max-h-52 min-h-24 resize-y rounded-lg border-[rgba(216,236,248,0.72)] bg-[#070914] px-4 py-3 font-mono text-[#d1e4fa] text-sm placeholder:text-[#9da7ba]"
         onChange={(event) => handleContentChange(event.currentTarget.value)}
         placeholder="Or paste Markdown here"
         value=""
@@ -592,14 +597,14 @@ function PreviewStage({
 }) {
   return (
     <section className="mt-4 rounded-xl border border-[rgba(216,236,248,0.16)] bg-[#070914] p-4 text-[#d1e4fa] shadow-[inset_0_1px_1px_rgba(199,211,234,0.12),inset_0_24px_48px_rgba(199,211,234,0.05),0_24px_32px_rgba(6,6,14,0.7)]">
+      <div className="mb-5 flex justify-end border-[rgba(216,236,248,0.12)] border-b pb-3">
+        <PreviewToggle mode={mode} setMode={setMode} />
+      </div>
       {mode === "code" ? (
         <MarkdownSourcePreview content={content} />
       ) : (
         <MarkdownRenderer content={content} />
       )}
-      <div className="mt-5 flex justify-end border-[rgba(216,236,248,0.12)] border-t pt-3">
-        <PreviewToggle mode={mode} setMode={setMode} />
-      </div>
     </section>
   );
 }

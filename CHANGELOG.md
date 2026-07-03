@@ -18,6 +18,8 @@
 
 ### Changed
 
+- Move the preview Render/Code toggle above rendered Markdown content.
+- Change the empty Markdown uploader to remove the outer frame and place the drop prompt closer to the top.
 - Change the create-share home flow to start with a large Markdown drop zone, then switch to a compact composer, page-flow render/code preview, and generated-link handoff after content is loaded.
 - Redesign the create-share landing screen around the upload flow, share controls, live preview, and generated-link handoff.
 - Document the UI redesign exploration track after completing Phase 4 product polish.
@@ -28,6 +30,8 @@
 
 ### Fixed
 
+- Stop exposing raw share database insert details in create-share errors.
+- Preserve line breaks when pasting Markdown into the empty uploader.
 - Restore readable Markdown page styling after Tailwind resets and rewrite internal heading links, including matching legacy short anchors to generated heading IDs.
 - Surface share storage failures instead of retrying non-slug database errors.
 - Prevent favicon browser requests from logging React Router 404 errors during development.

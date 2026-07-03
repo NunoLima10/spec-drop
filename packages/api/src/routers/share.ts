@@ -43,6 +43,8 @@ const createShareInput = z.object({
   maxViews: z.number().int().min(1).max(10_000).optional().nullable(),
 });
 
+const createShareFailureMessage = "Could not create a share. Please try again.";
+
 function isUniqueSlugError(error: unknown): boolean {
   return (
     error instanceof Error &&
@@ -185,10 +187,7 @@ export const shareRouter = router({
 
             throw new TRPCError({
               code: "INTERNAL_SERVER_ERROR",
-              message:
-                error instanceof Error
-                  ? error.message
-                  : "Could not create a share. Please try again.",
+              message: createShareFailureMessage,
               cause: error,
             });
           }
@@ -196,7 +195,7 @@ export const shareRouter = router({
           if (attempt === 4) {
             throw new TRPCError({
               code: "INTERNAL_SERVER_ERROR",
-              message: "Could not create a share. Please try again.",
+              message: createShareFailureMessage,
               cause: error,
             });
           }
@@ -205,7 +204,7 @@ export const shareRouter = router({
 
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Could not create a share. Please try again.",
+        message: createShareFailureMessage,
       });
     }),
 
