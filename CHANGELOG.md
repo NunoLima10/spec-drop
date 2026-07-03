@@ -4,6 +4,8 @@
 
 ### Added
 
+- Add a frosted-glass dark home screen for the Markdown drop-and-share flow.
+- Add shadcn UI setup, core form primitives, and React Bits registry access for UI exploration.
 - Add drag-and-drop Markdown upload, inferred Markdown titles, reading progress, estimated reading time, and a table of contents on shared pages.
 - Add zoom and panning controls for Mermaid diagrams in shared Markdown pages.
 - Add ephemeral sharing controls with expirations, delete-after-read, max views, view tracking, ownerless deletion, and scheduled cleanup.
@@ -16,6 +18,9 @@
 
 ### Changed
 
+- Change the create-share home flow to start with a large Markdown drop zone, then switch to a compact composer, page-flow render/code preview, and generated-link handoff after content is loaded.
+- Redesign the create-share landing screen around the upload flow, share controls, live preview, and generated-link handoff.
+- Document the UI redesign exploration track after completing Phase 4 product polish.
 - Advance the roadmap from Phase 3 ephemeral sharing controls to Phase 4 product polish.
 - Advance the roadmap from Phase 2 Markdown quality and safety to Phase 3 ephemeral sharing controls.
 - Advance the roadmap from Phase 1 Core Share MVP to Phase 2 Markdown quality and safety.

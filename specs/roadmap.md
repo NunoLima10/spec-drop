@@ -120,7 +120,7 @@ Exit criteria:
 
 Status: complete.
 
-## Phase 4: Product Polish - Current
+## Phase 4: Product Polish - Complete
 
 Goal: make the core flow feel fast, deliberate, and developer-first.
 
@@ -143,11 +143,43 @@ Exit criteria:
 - The page feels polished on desktop and mobile.
 - Common failure states are handled clearly.
 
+Status: complete.
+
+## Current Focus: Application UI Redesign - Active
+
+Goal: redesign the full web UI and compare multiple visual directions before committing to one design system.
+
+Context:
+
+- Phase 4 is complete, so the MVP flow is polished enough to evaluate visually.
+- The project will pause before Phase 5 developer workflow extensions.
+- The next work should focus on the application experience itself: upload, create-share options, generated-link handoff, shared reading pages, and all empty, loading, error, expired, deleted, and not-found states.
+
+Deliverables:
+
+- Define the first design token set from the provided references.
+- Create four distinct UI versions of the same product experience.
+- Add a temporary in-app toggle for switching between the four versions during review.
+- Keep all versions wired to the same existing product flow and data states.
+- Refresh the create-share screen, generated-share result, public reading page, navigation, and system states.
+- Include polished responsive layouts for desktop and mobile.
+- Keep accessibility, readable technical typography, dark mode, code blocks, tables, Mermaid diagrams, and share controls intact.
+- Use concise, product-specific copy where it helps the interface feel clearer and more intentional.
+
+Exit criteria:
+
+- Reviewers can switch between four complete UI directions without changing app behavior.
+- The chosen direction has enough coverage to replace the temporary variant switcher.
+- The redesign does not regress the upload-share-read loop, Markdown rendering, or ephemeral sharing controls.
+- Follow-up implementation work is clearly scoped around the selected visual direction.
+
 Status: active.
 
-## Phase 5: Developer Workflow Extensions
+## Phase 5: Developer Workflow Extensions - Deferred
 
 Goal: let developers publish from where they already write Markdown.
+
+This phase is intentionally deferred while the application UI redesign is explored and selected.
 
 Deliverables:
 
