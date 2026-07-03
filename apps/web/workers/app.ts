@@ -1,5 +1,5 @@
 import { trpcServer } from "@hono/trpc-server";
-import { appRouter } from "@specdrop/api";
+import { appRouter, cleanupExpiredShares } from "@specdrop/api";
 import { createDb } from "@specdrop/db";
 import { Hono } from "hono";
 import { createRequestHandler } from "react-router";
@@ -30,4 +30,15 @@ app.get("*", (context) => {
   return requestHandler(context.req.raw);
 });
 
-export default app;
+export default {
+  fetch(request: Request, env: Bindings, executionContext: ExecutionContext) {
+    return app.fetch(request, env, executionContext);
+  },
+  async scheduled(
+    _event: ScheduledEvent,
+    env: Bindings,
+    _executionContext: ExecutionContext,
+  ) {
+    await cleanupExpiredShares(createDb(env.DB));
+  },
+};

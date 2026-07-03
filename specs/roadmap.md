@@ -67,7 +67,7 @@ Exit criteria:
 
 Status: complete.
 
-## Phase 2: Markdown Quality And Safety - Current
+## Phase 2: Markdown Quality And Safety - Complete
 
 Goal: make rendering good enough for real technical documents and safe enough for public links.
 
@@ -93,9 +93,9 @@ Exit criteria:
 - Mermaid diagrams render without breaking the page.
 - The app has tests for the most important rendering and sanitization cases.
 
-Status: active.
+Status: complete.
 
-## Phase 3: Ephemeral Sharing Controls
+## Phase 3: Ephemeral Sharing Controls - Complete
 
 Goal: make temporary sharing a first-class part of the product.
 
@@ -118,7 +118,9 @@ Exit criteria:
 - Delete-after-read behavior is enforced server-side.
 - Cleanup can remove or soft-delete expired shares.
 
-## Phase 4: Product Polish
+Status: complete.
+
+## Phase 4: Product Polish - Current
 
 Goal: make the core flow feel fast, deliberate, and developer-first.
 
@@ -140,6 +142,8 @@ Exit criteria:
 - The MVP is usable without explanation.
 - The page feels polished on desktop and mobile.
 - Common failure states are handled clearly.
+
+Status: active.
 
 ## Phase 5: Developer Workflow Extensions
 
@@ -172,6 +176,7 @@ Deliverables:
 - Suggest reviewers or domains.
 - Ask questions about the document.
 - Generate or refine Mermaid diagrams.
+- User can add coments to the file
 
 Exit criteria:
 

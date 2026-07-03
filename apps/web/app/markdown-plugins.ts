@@ -16,6 +16,12 @@ type MarkdownNode = {
   value?: unknown;
 };
 
+export type MarkdownOutlineItem = {
+  depth: number;
+  id: string;
+  text: string;
+};
+
 export function anchorHeadersPlugin(options: { prefix: string }): BytemdPlugin {
   return {
     rehype: (processor: RehypeProcessor) =>
@@ -42,6 +48,173 @@ export function externalLinksPlugin(): BytemdPlugin {
   return {
     rehype: (processor: RehypeProcessor) =>
       processor.use(() => rehypeExternalLinks({ rel: createRel })),
+  };
+}
+
+export function collectRenderedHeadings(
+  markdownBody: HTMLElement,
+): MarkdownOutlineItem[] {
+  return Array.from(
+    markdownBody.querySelectorAll<HTMLHeadingElement>("h1[id], h2[id], h3[id]"),
+    (heading) => ({
+      depth: Number(heading.tagName.slice(1)),
+      id: heading.id,
+      text: heading.textContent?.replace(/\s+/g, " ").trim() ?? "",
+    }),
+  ).filter((heading) => heading.text);
+}
+
+export function renderedHeadingOutlinePlugin({
+  onChange,
+}: {
+  onChange: (outline: MarkdownOutlineItem[]) => void;
+}): BytemdPlugin {
+  return {
+    viewerEffect({ markdownBody }) {
+      const emitOutline = () => onChange(collectRenderedHeadings(markdownBody));
+
+      emitOutline();
+
+      const observer = new MutationObserver(emitOutline);
+      observer.observe(markdownBody, { childList: true, subtree: true });
+
+      return () => observer.disconnect();
+    },
+  };
+}
+
+export function mermaidControlsPlugin(): BytemdPlugin {
+  function enhance(container: HTMLElement) {
+    if (container.dataset.specdropMermaidEnhanced === "true") {
+      return;
+    }
+
+    const svg = container.querySelector("svg");
+
+    if (!svg) {
+      return;
+    }
+
+    container.dataset.specdropMermaidEnhanced = "true";
+    container.classList.add("specdrop-mermaid");
+
+    const toolbar = document.createElement("div");
+    toolbar.className = "specdrop-mermaid-toolbar";
+    toolbar.setAttribute("aria-label", "Mermaid diagram controls");
+
+    const viewport = document.createElement("div");
+    viewport.className = "specdrop-mermaid-viewport";
+    viewport.tabIndex = 0;
+
+    const canvas = document.createElement("div");
+    canvas.className = "specdrop-mermaid-canvas";
+
+    while (container.firstChild) {
+      canvas.appendChild(container.firstChild);
+    }
+
+    let scale = 1;
+    let offsetX = 0;
+    let offsetY = 0;
+    let activePointerId: number | null = null;
+    let startX = 0;
+    let startY = 0;
+    let startOffsetX = 0;
+    let startOffsetY = 0;
+
+    function updateTransform() {
+      canvas.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+    }
+
+    function setScale(nextScale: number) {
+      scale = Math.min(3, Math.max(0.5, nextScale));
+      updateTransform();
+    }
+
+    function createButton(label: string, text: string, onClick: () => void) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "specdrop-mermaid-button";
+      button.setAttribute("aria-label", label);
+      button.textContent = text;
+      button.addEventListener("click", onClick);
+
+      return button;
+    }
+
+    toolbar.appendChild(
+      createButton("Zoom out Mermaid diagram", "-", () =>
+        setScale(scale - 0.2),
+      ),
+    );
+    toolbar.appendChild(
+      createButton("Reset Mermaid diagram view", "Reset", () => {
+        scale = 1;
+        offsetX = 0;
+        offsetY = 0;
+        updateTransform();
+      }),
+    );
+    toolbar.appendChild(
+      createButton("Zoom in Mermaid diagram", "+", () => setScale(scale + 0.2)),
+    );
+
+    viewport.addEventListener("pointerdown", (event) => {
+      activePointerId = event.pointerId;
+      startX = event.clientX;
+      startY = event.clientY;
+      startOffsetX = offsetX;
+      startOffsetY = offsetY;
+      viewport.setPointerCapture(event.pointerId);
+      viewport.classList.add("is-panning");
+    });
+
+    viewport.addEventListener("pointermove", (event) => {
+      if (activePointerId !== event.pointerId) {
+        return;
+      }
+
+      offsetX = startOffsetX + event.clientX - startX;
+      offsetY = startOffsetY + event.clientY - startY;
+      updateTransform();
+    });
+
+    function stopPanning(event: PointerEvent) {
+      if (activePointerId !== event.pointerId) {
+        return;
+      }
+
+      activePointerId = null;
+      if (viewport.hasPointerCapture(event.pointerId)) {
+        viewport.releasePointerCapture(event.pointerId);
+      }
+      viewport.classList.remove("is-panning");
+    }
+
+    viewport.addEventListener("pointerup", stopPanning);
+    viewport.addEventListener("pointercancel", stopPanning);
+
+    viewport.appendChild(canvas);
+    container.appendChild(toolbar);
+    container.appendChild(viewport);
+    updateTransform();
+  }
+
+  function enhanceAll(markdownBody: HTMLElement) {
+    markdownBody
+      .querySelectorAll<HTMLElement>(".bytemd-mermaid")
+      .forEach(enhance);
+  }
+
+  return {
+    viewerEffect({ markdownBody }) {
+      enhanceAll(markdownBody);
+
+      const observer = new MutationObserver(() => enhanceAll(markdownBody));
+      observer.observe(markdownBody, { childList: true, subtree: true });
+
+      return () => observer.disconnect();
+    },
   };
 }
 
