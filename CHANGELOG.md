@@ -33,6 +33,7 @@
 
 ### Fixed
 
+- Fix pasted Markdown input capture and defer shared Markdown download cleanup.
 - Stop exposing raw share database insert details in create-share errors.
 - Preserve line breaks when pasting Markdown into the empty uploader.
 - Restore readable Markdown page styling after Tailwind resets and rewrite internal heading links, including matching legacy short anchors to generated heading IDs.

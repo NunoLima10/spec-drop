@@ -163,7 +163,7 @@ export default function Share() {
     anchor.href = url;
     anchor.download = fileName;
     anchor.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
   return (

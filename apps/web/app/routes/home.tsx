@@ -359,6 +359,7 @@ function DropComposer({
         />
       ) : (
         <MarkdownIngress
+          content={content}
           error={error}
           handleContentChange={handleContentChange}
           handleDragLeave={handleDragLeave}
@@ -373,6 +374,7 @@ function DropComposer({
 }
 
 function MarkdownIngress({
+  content,
   error,
   handleContentChange,
   handleDragLeave,
@@ -382,6 +384,7 @@ function MarkdownIngress({
   isDraggingFile,
 }: Pick<
   ComposerProps,
+  | "content"
   | "error"
   | "handleContentChange"
   | "handleDragLeave"
@@ -432,7 +435,7 @@ function MarkdownIngress({
         className="mt-3 max-h-52 min-h-24 resize-y rounded-lg border-[rgba(216,236,248,0.72)] bg-[#070914] px-4 py-3 font-mono text-[#d1e4fa] text-sm placeholder:text-[#9da7ba]"
         onChange={(event) => handleContentChange(event.currentTarget.value)}
         placeholder="Or paste Markdown here"
-        value=""
+        value={content}
       />
 
       {error ? (
