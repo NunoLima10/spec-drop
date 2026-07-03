@@ -69,6 +69,7 @@ html {
 }
 
 .specdrop-markdown .markdown-body {
+  background: transparent;
   color: #1e293b;
   font-size: 1rem;
   line-height: 1.75;
@@ -323,6 +324,97 @@ html {
   height: auto;
   margin: 0 auto;
   max-width: none;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body {
+  color: #d1e4fa;
+  font-size: 1.0625rem;
+  line-height: 1.85;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body h1,
+.specdrop-reader .specdrop-markdown .markdown-body h2,
+.specdrop-reader .specdrop-markdown .markdown-body h3,
+.specdrop-reader .specdrop-markdown .markdown-body h4,
+.specdrop-reader .specdrop-markdown .markdown-body h5,
+.specdrop-reader .specdrop-markdown .markdown-body h6,
+.specdrop-reader .specdrop-markdown .markdown-body strong {
+  color: #f8fbff;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body h1 {
+  border-bottom-color: rgba(216, 236, 248, 0.18);
+  font-size: clamp(2.4rem, 5vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-top: 0;
+  padding-bottom: 0.9rem;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body h2 {
+  border-bottom-color: rgba(216, 236, 248, 0.14);
+  font-size: 1.75rem;
+  margin-top: 2.75rem;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body h3 {
+  font-size: 1.35rem;
+  margin-top: 2rem;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body a {
+  color: #78c8f7;
+  text-decoration-color: rgba(120, 200, 247, 0.55);
+  text-decoration-thickness: 1px;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body a:hover {
+  color: #b9e4ff;
+  text-decoration-color: currentColor;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body blockquote {
+  border-left-color: rgba(120, 200, 247, 0.45);
+  color: #b7c7dd;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body hr {
+  border-top-color: rgba(216, 236, 248, 0.16);
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body code {
+  background: rgba(216, 236, 248, 0.11);
+  color: #eef7ff;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body pre {
+  background: rgba(2, 6, 23, 0.82);
+  border: 1px solid rgba(216, 236, 248, 0.1);
+  color: #d8ecf8;
+  padding: 0;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body pre code,
+.specdrop-reader .specdrop-markdown .markdown-body pre .hljs {
+  background: transparent;
+  border-radius: 0;
+  color: inherit;
+  padding: 1rem;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body th,
+.specdrop-reader .specdrop-markdown .markdown-body td {
+  border-color: rgba(216, 236, 248, 0.16);
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body th {
+  background: rgba(216, 236, 248, 0.08);
+  color: #f8fbff;
+}
+
+.specdrop-reader .specdrop-markdown .markdown-body .bytemd-mermaid {
+  background: rgba(2, 6, 23, 0.72);
+  border-color: rgba(216, 236, 248, 0.14);
 }
 
 @media (prefers-color-scheme: dark) {

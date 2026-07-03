@@ -4,6 +4,7 @@
 
 ### Added
 
+- Add quick actions to shared Markdown pages for render/code viewing, copying, and downloading.
 - Add a frosted-glass dark home screen for the Markdown drop-and-share flow.
 - Add shadcn UI setup, core form primitives, and React Bits registry access for UI exploration.
 - Add drag-and-drop Markdown upload, inferred Markdown titles, reading progress, estimated reading time, and a table of contents on shared pages.
@@ -18,6 +19,7 @@
 
 ### Changed
 
+- Redesign shared Markdown read pages with a cleaner dark layout and calmer document typography.
 - Move the preview Render/Code toggle above rendered Markdown content.
 - Change the empty Markdown uploader to remove the outer frame and place the drop prompt closer to the top.
 - Change the create-share home flow to start with a large Markdown drop zone, then switch to a compact composer, page-flow render/code preview, and generated-link handoff after content is loaded.
