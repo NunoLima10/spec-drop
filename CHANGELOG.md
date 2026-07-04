@@ -4,6 +4,8 @@
 
 ### Added
 
+- Add tests for the QR code component's loading, SVG generation, and invalid/empty URL states.
+- Document the QR share code plan for frontend-generated SVG QR codes.
 - Add quick actions to shared Markdown pages for render/code viewing, copying, and downloading.
 - Add a frosted-glass dark home screen for the Markdown drop-and-share flow.
 - Add shadcn UI setup, core form primitives, and React Bits registry access for UI exploration.
@@ -19,6 +21,8 @@
 
 ### Changed
 
+- Remove the decorative frame around generated share QR codes.
+- Reduce QR code panel sizing on generated-share and public share pages.
 - Redesign error, not-found, and share loading states with focused SpecsDrop status layouts.
 - Redesign shared Markdown read pages with a cleaner dark layout and calmer document typography.
 - Move the preview Render/Code toggle above rendered Markdown content.
