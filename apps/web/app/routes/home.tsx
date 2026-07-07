@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
 import { useState } from "react";
+import { ShareQrCode } from "~/components/share-qr-code";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -359,6 +360,7 @@ function DropComposer({
         />
       ) : (
         <MarkdownIngress
+          content={content}
           error={error}
           handleContentChange={handleContentChange}
           handleDragLeave={handleDragLeave}
@@ -373,6 +375,7 @@ function DropComposer({
 }
 
 function MarkdownIngress({
+  content,
   error,
   handleContentChange,
   handleDragLeave,
@@ -382,6 +385,7 @@ function MarkdownIngress({
   isDraggingFile,
 }: Pick<
   ComposerProps,
+  | "content"
   | "error"
   | "handleContentChange"
   | "handleDragLeave"
@@ -432,7 +436,7 @@ function MarkdownIngress({
         className="mt-3 max-h-52 min-h-24 resize-y rounded-lg border-[rgba(216,236,248,0.72)] bg-[#070914] px-4 py-3 font-mono text-[#d1e4fa] text-sm placeholder:text-[#9da7ba]"
         onChange={(event) => handleContentChange(event.currentTarget.value)}
         placeholder="Or paste Markdown here"
-        value=""
+        value={content}
       />
 
       {error ? (
@@ -677,23 +681,9 @@ function ShareResult({
 }) {
   return (
     <section className="rounded-xl border border-[rgba(216,236,248,0.16)] bg-[#070914] p-4 text-[#d1e4fa] shadow-[inset_0_1px_1px_rgba(199,211,234,0.12),inset_0_24px_48px_rgba(199,211,234,0.05),0_24px_32px_rgba(6,6,14,0.7)] sm:p-5">
-      <div className="grid gap-5 lg:grid-cols-[16rem_1fr] lg:items-center">
-        <div className="flex aspect-square items-center justify-center rounded-xl border border-[rgba(216,236,248,0.18)] bg-[#05060f] p-5">
-          <div
-            aria-hidden="true"
-            className="grid size-full grid-cols-5 grid-rows-5 gap-2"
-          >
-            {Array.from({ length: 25 }).map((_, index) => (
-              <span
-                className={
-                  qrBlocks.has(index)
-                    ? "rounded-sm bg-[#d8ecf8]"
-                    : "rounded-sm bg-[#151827]"
-                }
-                key={index}
-              />
-            ))}
-          </div>
+      <div className="grid gap-5 lg:grid-cols-[13rem_1fr] lg:items-center">
+        <div className="flex aspect-square items-center justify-center p-1">
+          <ShareQrCode url={shareUrl} />
         </div>
 
         <div className="min-w-0">
@@ -760,7 +750,3 @@ function ShareResult({
     </section>
   );
 }
-
-const qrBlocks = new Set([
-  0, 1, 2, 4, 5, 7, 9, 10, 12, 14, 15, 16, 18, 20, 22, 23, 24,
-]);

@@ -6,12 +6,14 @@ import {
   DownloadIcon,
   EyeIcon,
   InfinityIcon,
+  QrCodeIcon,
   TimerIcon,
   Trash2Icon,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { ShareQrCode } from "~/components/share-qr-code";
 import { StatusPage } from "~/components/status-page";
 import { Button } from "~/components/ui/button";
 import type { MarkdownOutlineItem } from "../markdown-plugins";
@@ -74,6 +76,7 @@ export default function Share() {
   const [outline, setOutline] = useState<MarkdownOutlineItem[]>([]);
   const [previewMode, setPreviewMode] = useState<PreviewMode>("render");
   const [copyStatus, setCopyStatus] = useState("");
+  const [sharePageUrl, setSharePageUrl] = useState("");
   const readingProgress = useReadingProgress();
   const handleOutlineChange = useCallback((items: MarkdownOutlineItem[]) => {
     setOutline((currentItems) =>
@@ -128,6 +131,10 @@ export default function Share() {
     };
   }, [copyStatus]);
 
+  useEffect(() => {
+    setSharePageUrl(window.location.href);
+  }, []);
+
   if (state.status === "loading") {
     return <ShareLoadingSkeleton />;
   }
@@ -163,7 +170,7 @@ export default function Share() {
     anchor.href = url;
     anchor.download = fileName;
     anchor.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
   return (
@@ -200,6 +207,7 @@ export default function Share() {
                   onCopyMarkdown={handleCopyMarkdown}
                   onDownloadMarkdown={handleDownloadMarkdown}
                   setMode={setPreviewMode}
+                  shareUrl={sharePageUrl}
                 />
               </header>
 
@@ -247,69 +255,97 @@ function ShareActions({
   onCopyMarkdown,
   onDownloadMarkdown,
   setMode,
+  shareUrl,
 }: {
   copyStatus: string;
   mode: PreviewMode;
   onCopyMarkdown: () => Promise<void>;
   onDownloadMarkdown: () => void;
   setMode: (mode: PreviewMode) => void;
+  shareUrl: string;
 }) {
+  const [isQrOpen, setIsQrOpen] = useState(false);
+
   return (
-    <div className="mt-5 flex flex-wrap items-center gap-2">
-      <div className="grid grid-cols-2 rounded-lg border border-white/10 bg-[#05060f]/70 p-1">
+    <div className="mt-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="grid grid-cols-2 rounded-lg border border-white/10 bg-[#05060f]/70 p-1">
+          <Button
+            className={`h-8 rounded-md px-3 ${
+              mode === "render"
+                ? "bg-white/15 text-white hover:bg-white/20"
+                : "bg-transparent text-[#9da7ba] hover:bg-white/10 hover:text-white"
+            }`}
+            onClick={() => setMode("render")}
+            size="sm"
+            type="button"
+          >
+            <EyeIcon aria-hidden="true" data-icon="inline-start" />
+            Render
+          </Button>
+          <Button
+            className={`h-8 rounded-md px-3 ${
+              mode === "code"
+                ? "bg-white/15 text-white hover:bg-white/20"
+                : "bg-transparent text-[#9da7ba] hover:bg-white/10 hover:text-white"
+            }`}
+            onClick={() => setMode("code")}
+            size="sm"
+            type="button"
+          >
+            <Code2Icon aria-hidden="true" data-icon="inline-start" />
+            Code
+          </Button>
+        </div>
         <Button
-          className={`h-8 rounded-md px-3 ${
-            mode === "render"
-              ? "bg-white/15 text-white hover:bg-white/20"
-              : "bg-transparent text-[#9da7ba] hover:bg-white/10 hover:text-white"
-          }`}
-          onClick={() => setMode("render")}
+          aria-label={copyStatus || "Copy Markdown"}
+          className="size-9 border-[rgba(216,236,248,0.18)] bg-[#05060f]/70 p-0 text-[#d1e4fa] hover:bg-white/10 hover:text-white"
+          onClick={() => void onCopyMarkdown()}
           size="sm"
+          title={copyStatus || "Copy Markdown"}
           type="button"
+          variant="outline"
         >
-          <EyeIcon aria-hidden="true" data-icon="inline-start" />
-          Render
+          {copyStatus ? (
+            <CheckIcon aria-hidden="true" className="size-4" />
+          ) : (
+            <CopyIcon aria-hidden="true" className="size-4" />
+          )}
         </Button>
         <Button
-          className={`h-8 rounded-md px-3 ${
-            mode === "code"
-              ? "bg-white/15 text-white hover:bg-white/20"
-              : "bg-transparent text-[#9da7ba] hover:bg-white/10 hover:text-white"
-          }`}
-          onClick={() => setMode("code")}
+          aria-label="Download Markdown"
+          className="size-9 border-[rgba(216,236,248,0.18)] bg-[#05060f]/70 p-0 text-[#d1e4fa] hover:bg-white/10 hover:text-white"
+          onClick={onDownloadMarkdown}
           size="sm"
+          title="Download Markdown"
           type="button"
+          variant="outline"
         >
-          <Code2Icon aria-hidden="true" data-icon="inline-start" />
-          Code
+          <DownloadIcon aria-hidden="true" className="size-4" />
+        </Button>
+        <Button
+          aria-expanded={isQrOpen}
+          aria-label={isQrOpen ? "Hide share QR code" : "Show share QR code"}
+          className="size-9 border-[rgba(216,236,248,0.18)] bg-[#05060f]/70 p-0 text-[#d1e4fa] hover:bg-white/10 hover:text-white"
+          disabled={!shareUrl}
+          onClick={() => setIsQrOpen((isOpen) => !isOpen)}
+          size="sm"
+          title={isQrOpen ? "Hide QR code" : "Show QR code"}
+          type="button"
+          variant="outline"
+        >
+          <QrCodeIcon aria-hidden="true" className="size-4" />
         </Button>
       </div>
-      <Button
-        aria-label={copyStatus || "Copy Markdown"}
-        className="size-9 border-[rgba(216,236,248,0.18)] bg-[#05060f]/70 p-0 text-[#d1e4fa] hover:bg-white/10 hover:text-white"
-        onClick={() => void onCopyMarkdown()}
-        size="sm"
-        title={copyStatus || "Copy Markdown"}
-        type="button"
-        variant="outline"
-      >
-        {copyStatus ? (
-          <CheckIcon aria-hidden="true" className="size-4" />
-        ) : (
-          <CopyIcon aria-hidden="true" className="size-4" />
-        )}
-      </Button>
-      <Button
-        aria-label="Download Markdown"
-        className="size-9 border-[rgba(216,236,248,0.18)] bg-[#05060f]/70 p-0 text-[#d1e4fa] hover:bg-white/10 hover:text-white"
-        onClick={onDownloadMarkdown}
-        size="sm"
-        title="Download Markdown"
-        type="button"
-        variant="outline"
-      >
-        <DownloadIcon aria-hidden="true" className="size-4" />
-      </Button>
+
+      {isQrOpen && shareUrl ? (
+        <div className="mt-4 w-full max-w-44 rounded-xl border border-[rgba(216,236,248,0.16)] bg-[#05060f]/80 p-2 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
+          <ShareQrCode className="p-2" url={shareUrl} />
+          <p className="mt-3 break-all text-[#9da7ba] text-xs leading-5">
+            {shareUrl}
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }
