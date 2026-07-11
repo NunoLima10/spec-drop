@@ -37,6 +37,7 @@
 
 ### Fixed
 
+- Prevent shared Markdown page scrolling from re-rendering Mermaid diagrams.
 - Fix pasted Markdown input capture and defer shared Markdown download cleanup.
 - Stop exposing raw share database insert details in create-share errors.
 - Preserve line breaks when pasting Markdown into the empty uploader.

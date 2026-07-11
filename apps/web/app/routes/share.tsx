@@ -11,7 +11,7 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { ShareQrCode } from "~/components/share-qr-code";
 import { StatusPage } from "~/components/status-page";
@@ -39,35 +39,78 @@ type ShareState =
       };
     };
 
-function useReadingProgress() {
-  const [progress, setProgress] = useState(0);
+function ReadingProgressBar() {
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function updateProgress() {
-      const scrollable =
-        document.documentElement.scrollHeight - window.innerHeight;
+    let animationFrameId = 0;
 
-      if (scrollable <= 0) {
-        setProgress(100);
+    function updateProgress() {
+      const progressBar = progressRef.current;
+
+      if (!progressBar) {
         return;
       }
 
-      setProgress(
-        Math.min(100, Math.max(0, (window.scrollY / scrollable) * 100)),
-      );
+      progressBar.style.width = `${getReadingProgress({
+        scrollHeight: document.documentElement.scrollHeight,
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+      })}%`;
+    }
+
+    function scheduleUpdateProgress() {
+      if (animationFrameId) {
+        return;
+      }
+
+      animationFrameId = window.requestAnimationFrame(() => {
+        animationFrameId = 0;
+        updateProgress();
+      });
     }
 
     updateProgress();
-    window.addEventListener("scroll", updateProgress, { passive: true });
-    window.addEventListener("resize", updateProgress);
+    window.addEventListener("scroll", scheduleUpdateProgress, {
+      passive: true,
+    });
+    window.addEventListener("resize", scheduleUpdateProgress);
 
     return () => {
-      window.removeEventListener("scroll", updateProgress);
-      window.removeEventListener("resize", updateProgress);
+      if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+
+      window.removeEventListener("scroll", scheduleUpdateProgress);
+      window.removeEventListener("resize", scheduleUpdateProgress);
     };
   }, []);
 
-  return progress;
+  return (
+    <div
+      className="fixed top-0 left-0 z-50 h-1 bg-[#663af3]"
+      ref={progressRef}
+      style={{ width: "0%" }}
+    />
+  );
+}
+
+export function getReadingProgress({
+  scrollHeight,
+  scrollY,
+  viewportHeight,
+}: {
+  scrollHeight: number;
+  scrollY: number;
+  viewportHeight: number;
+}) {
+  const scrollable = scrollHeight - viewportHeight;
+
+  if (scrollable <= 0) {
+    return 100;
+  }
+
+  return Math.min(100, Math.max(0, (scrollY / scrollable) * 100));
 }
 
 export default function Share() {
@@ -77,7 +120,6 @@ export default function Share() {
   const [previewMode, setPreviewMode] = useState<PreviewMode>("render");
   const [copyStatus, setCopyStatus] = useState("");
   const [sharePageUrl, setSharePageUrl] = useState("");
-  const readingProgress = useReadingProgress();
   const handleOutlineChange = useCallback((items: MarkdownOutlineItem[]) => {
     setOutline((currentItems) =>
       outlinesAreEqual(currentItems, items) ? currentItems : items,
@@ -175,10 +217,7 @@ export default function Share() {
 
   return (
     <>
-      <div
-        className="fixed top-0 left-0 z-50 h-1 bg-[#663af3]"
-        style={{ width: `${readingProgress}%` }}
-      />
+      <ReadingProgressBar />
       <main className="relative min-h-screen overflow-hidden bg-[#05060f] text-white">
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(186,215,247,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(186,215,247,0.05)_1px,transparent_1px)] bg-[size:84px_84px] [mask-image:radial-gradient(circle_at_top,black,transparent_78%)]" />
         <div className="pointer-events-none absolute inset-x-0 top-[-18rem] mx-auto h-[34rem] max-w-5xl bg-[conic-gradient(from_180deg_at_50%_45%,transparent_0deg,rgba(124,145,182,0.45)_22deg,transparent_52deg)] blur-2xl" />

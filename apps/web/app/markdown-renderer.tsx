@@ -1,6 +1,6 @@
 import type { ViewerProps } from "bytemd";
 import type { ComponentType } from "react";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import "bytemd/dist/index.css";
 import type { MarkdownOutlineItem } from "./markdown-plugins";
 
@@ -34,7 +34,7 @@ function sanitize(defaultSchema: SanitizeSchema): SanitizeSchema {
   return defaultSchema;
 }
 
-export function MarkdownRenderer({
+function MarkdownRendererComponent({
   content,
   onOutlineChange,
 }: {
@@ -133,3 +133,5 @@ export function MarkdownRenderer({
     </article>
   );
 }
+
+export const MarkdownRenderer = memo(MarkdownRendererComponent);
