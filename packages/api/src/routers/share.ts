@@ -1,6 +1,9 @@
 import type { DB } from "@specdrop/db";
 import { schema } from "@specdrop/db";
-import { validateMarkdownContent } from "@specdrop/markdown";
+import {
+  inferTitleFromMarkdownHeading,
+  validateMarkdownContent,
+} from "@specdrop/markdown";
 import { TRPCError } from "@trpc/server";
 import { and, eq, isNull, lte, sql } from "drizzle-orm";
 import { z } from "zod";
@@ -54,6 +57,55 @@ function isUniqueSlugError(error: unknown): boolean {
 }
 
 type ShareRecord = typeof schema.shares.$inferSelect;
+
+export function resolveShareTitle({
+  content,
+  title,
+}: {
+  content: string;
+  title?: string | null;
+}): string | null {
+  return title?.trim() || inferTitleFromMarkdownHeading(content) || null;
+}
+
+export function shouldExposeSharePreviewTitle(
+  share: Pick<ShareRecord, "deleteAfterRead" | "maxViews">,
+): boolean {
+  return !share.deleteAfterRead && share.maxViews === null;
+}
+
+export async function getSharePreviewBySlug(
+  db: DB,
+  slug: string,
+  now = new Date(),
+) {
+  const share = await db.query.shares.findFirst({
+    columns: {
+      title: true,
+      content: true,
+      deletedAt: true,
+      expiresAt: true,
+      deleteAfterRead: true,
+      readAt: true,
+      maxViews: true,
+      currentViews: true,
+    },
+    where: eq(schema.shares.slug, slug),
+  });
+
+  if (!share || getUnavailableShareMessage(share, now)) {
+    return null;
+  }
+
+  return {
+    title: shouldExposeSharePreviewTitle(share)
+      ? resolveShareTitle({
+          title: share.title,
+          content: share.content,
+        })
+      : null,
+  };
+}
 
 export function getExpiresAt(
   expiresIn: z.infer<typeof expirationOptionSchema>,
@@ -154,7 +206,7 @@ export const shareRouter = router({
         });
       }
 
-      const title = input.title || null;
+      const title = resolveShareTitle({ title: input.title, content });
       const id = crypto.randomUUID();
       const expiresAt = getExpiresAt(input.expiresIn);
       const maxViews = input.maxViews ?? null;

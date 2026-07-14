@@ -3,6 +3,8 @@ import {
   getExpiresAt,
   getShareViewUpdate,
   getUnavailableShareMessage,
+  resolveShareTitle,
+  shouldExposeSharePreviewTitle,
 } from "./share.js";
 
 const now = new Date("2026-06-30T12:00:00.000Z");
@@ -20,6 +22,49 @@ function createShare(overrides = {}) {
 }
 
 describe("share lifecycle", () => {
+  it("resolves share titles from explicit input or Markdown headings", () => {
+    expect(
+      resolveShareTitle({
+        title: "Explicit Spec Title",
+        content: "# Markdown Title\n\nBody",
+      }),
+    ).toBe("Explicit Spec Title");
+
+    expect(
+      resolveShareTitle({
+        title: "",
+        content: "# Markdown Title\n\nBody",
+      }),
+    ).toBe("Markdown Title");
+
+    expect(
+      resolveShareTitle({
+        title: "",
+        content: "Body without a heading.",
+      }),
+    ).toBeNull();
+  });
+
+  it("hides preview titles for view-limited shares", () => {
+    expect(
+      shouldExposeSharePreviewTitle(
+        createShare({ deleteAfterRead: true, maxViews: null }),
+      ),
+    ).toBe(false);
+
+    expect(
+      shouldExposeSharePreviewTitle(
+        createShare({ deleteAfterRead: false, maxViews: 3 }),
+      ),
+    ).toBe(false);
+
+    expect(
+      shouldExposeSharePreviewTitle(
+        createShare({ deleteAfterRead: false, maxViews: null }),
+      ),
+    ).toBe(true);
+  });
+
   it("computes expiration timestamps from create options", () => {
     expect(getExpiresAt("never", now)).toBeNull();
     expect(getExpiresAt("1h", now)).toBe("2026-06-30T13:00:00.000Z");

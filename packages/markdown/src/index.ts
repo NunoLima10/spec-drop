@@ -3,6 +3,21 @@ export function normalizeMarkdownContent(content: string): string {
 }
 
 export const MARKDOWN_CONTENT_MAX_LENGTH = 100_000;
+export const MARKDOWN_TITLE_MAX_LENGTH = 120;
+
+export function inferTitleFromMarkdownHeading(markdown: string): string {
+  const heading = markdown.match(/^#{1,6}\s+(.+?)\s*#*\s*$/m)?.[1];
+
+  if (!heading) {
+    return "";
+  }
+
+  return heading
+    .replace(/\s+/g, " ")
+    .replace(/[*_`~[\]()]/g, "")
+    .trim()
+    .slice(0, MARKDOWN_TITLE_MAX_LENGTH);
+}
 
 export function validateMarkdownContent(content: string): string {
   const normalizedContent = normalizeMarkdownContent(content);
