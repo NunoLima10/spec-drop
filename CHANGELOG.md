@@ -4,6 +4,7 @@
 
 ### Added
 
+- Add Worker-level rate limiting for share create, read, and delete API calls.
 - Add social preview metadata titles for shared Markdown links while hiding titles for view-limited shares.
 - Add tests for the QR code component's loading, SVG generation, and invalid/empty URL states.
 - Document the QR share code plan for frontend-generated SVG QR codes.

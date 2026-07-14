@@ -9,6 +9,32 @@
   "triggers": {
     "crons": ["*/30 * * * *"]
   },
+  "ratelimits": [
+    {
+      "name": "CREATE_SHARE_RATE_LIMITER",
+      "namespace_id": "2026071401",
+      "simple": {
+        "limit": 20,
+        "period": 60
+      }
+    },
+    {
+      "name": "READ_SHARE_RATE_LIMITER",
+      "namespace_id": "2026071402",
+      "simple": {
+        "limit": 120,
+        "period": 60
+      }
+    },
+    {
+      "name": "DELETE_SHARE_RATE_LIMITER",
+      "namespace_id": "2026071403",
+      "simple": {
+        "limit": 30,
+        "period": 60
+      }
+    }
+  ],
   "d1_databases": [
     {
       "binding": "DB",
