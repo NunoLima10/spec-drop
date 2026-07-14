@@ -4,6 +4,7 @@
 
 ### Added
 
+- Add social preview metadata titles for shared Markdown links while hiding titles for view-limited shares.
 - Add tests for the QR code component's loading, SVG generation, and invalid/empty URL states.
 - Document the QR share code plan for frontend-generated SVG QR codes.
 - Add quick actions to shared Markdown pages for render/code viewing, copying, and downloading.

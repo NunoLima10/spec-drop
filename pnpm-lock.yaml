@@ -161,6 +161,9 @@ importers:
       '@specdrop/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@specdrop/markdown':
+        specifier: workspace:*
+        version: link:../../packages/markdown
       '@trpc/client':
         specifier: 'catalog:'
         version: 11.18.0(@trpc/server@11.18.0(typescript@5.9.3))(typescript@5.9.3)

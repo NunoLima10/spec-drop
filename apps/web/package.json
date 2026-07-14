@@ -27,6 +27,7 @@
     "@hono/trpc-server": "catalog:",
     "@specdrop/api": "workspace:*",
     "@specdrop/db": "workspace:*",
+    "@specdrop/markdown": "workspace:*",
     "@trpc/client": "catalog:",
     "bytemd": "catalog:",
     "class-variance-authority": "^0.7.1",

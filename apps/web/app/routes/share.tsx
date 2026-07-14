@@ -1,3 +1,4 @@
+import { getSharePreviewBySlug } from "@specdrop/api";
 import {
   CheckIcon,
   ClockIcon,
@@ -12,16 +13,22 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { RouterContextProvider } from "react-router";
 import { useParams } from "react-router";
 import { ShareQrCode } from "~/components/share-qr-code";
 import { StatusPage } from "~/components/status-page";
 import { Button } from "~/components/ui/button";
+import { dbContext, originContext } from "~/router-context";
 import type { MarkdownOutlineItem } from "../markdown-plugins";
 import { MarkdownRenderer } from "../markdown-renderer";
 import { estimateReadingTime } from "../share-metadata";
 import { trpc } from "../trpc";
 
 type PreviewMode = "render" | "code";
+type ShareLoaderData = {
+  canonicalUrl: string;
+  previewTitle: string | null;
+};
 
 type ShareState =
   | { status: "loading" }
@@ -38,6 +45,95 @@ type ShareState =
         currentViews: number;
       };
     };
+
+const defaultSharePreviewTitle = "Shared Markdown";
+const sharePreviewDescription =
+  "A shared Markdown spec published with SpecsDrop.";
+
+export async function loader({
+  context,
+  params,
+  request,
+}: {
+  context: RouterContextProvider;
+  params: { slug?: string };
+  request: Request;
+}): Promise<ShareLoaderData> {
+  const requestUrl = new URL(request.url);
+  const origin = context.get(originContext) ?? requestUrl.origin;
+  const db = context.get(dbContext);
+  const slug = params.slug ?? "";
+  const canonicalUrl = slug
+    ? new URL(`/s/${slug}`, origin).toString()
+    : requestUrl.toString();
+
+  if (!slug || !db) {
+    return {
+      canonicalUrl,
+      previewTitle: null,
+    };
+  }
+
+  const preview = await getSharePreviewBySlug(db, slug);
+
+  return {
+    canonicalUrl,
+    previewTitle: preview?.title ?? null,
+  };
+}
+
+export function getSharePageTitle(previewTitle: string | null): string {
+  return `${previewTitle || defaultSharePreviewTitle} | SpecsDrop`;
+}
+
+export function meta({ data }: { data?: ShareLoaderData }) {
+  const pageTitle = getSharePageTitle(data?.previewTitle ?? null);
+  const url = data?.canonicalUrl;
+
+  return [
+    { title: pageTitle },
+    {
+      name: "description",
+      content: sharePreviewDescription,
+    },
+    {
+      property: "og:type",
+      content: "article",
+    },
+    {
+      property: "og:site_name",
+      content: "SpecsDrop",
+    },
+    {
+      property: "og:title",
+      content: pageTitle,
+    },
+    {
+      property: "og:description",
+      content: sharePreviewDescription,
+    },
+    ...(url
+      ? [
+          {
+            property: "og:url",
+            content: url,
+          },
+        ]
+      : []),
+    {
+      name: "twitter:card",
+      content: "summary",
+    },
+    {
+      name: "twitter:title",
+      content: pageTitle,
+    },
+    {
+      name: "twitter:description",
+      content: sharePreviewDescription,
+    },
+  ];
+}
 
 function ReadingProgressBar() {
   const progressRef = useRef<HTMLDivElement>(null);

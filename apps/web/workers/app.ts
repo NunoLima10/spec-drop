@@ -2,7 +2,8 @@ import { trpcServer } from "@hono/trpc-server";
 import { appRouter, cleanupExpiredShares } from "@specdrop/api";
 import { createDb } from "@specdrop/db";
 import { Hono } from "hono";
-import { createRequestHandler } from "react-router";
+import { createRequestHandler, RouterContextProvider } from "react-router";
+import { dbContext, originContext } from "../app/router-context";
 
 type Bindings = {
   DB: D1Database;
@@ -26,8 +27,13 @@ app.get("*", (context) => {
     () => import("virtual:react-router/server-build"),
     import.meta.env.MODE,
   );
+  const origin = new URL(context.req.url).origin;
+  const loadContext = new RouterContextProvider();
 
-  return requestHandler(context.req.raw);
+  loadContext.set(dbContext, createDb(context.env.DB));
+  loadContext.set(originContext, origin);
+
+  return requestHandler(context.req.raw, loadContext);
 });
 
 export default {

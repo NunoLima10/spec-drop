@@ -1,3 +1,5 @@
+import { inferTitleFromMarkdownHeading } from "@specdrop/markdown";
+
 const markdownFilePattern = /\.(md|markdown)$/i;
 
 export function isMarkdownFile(file: Pick<File, "name" | "type">) {
@@ -16,19 +18,7 @@ export function inferTitleFromFileName(fileName: string) {
     .trim();
 }
 
-export function inferTitleFromMarkdownHeading(markdown: string) {
-  const heading = markdown.match(/^#{1,6}\s+(.+?)\s*#*\s*$/m)?.[1];
-
-  if (!heading) {
-    return "";
-  }
-
-  return heading
-    .replace(/\s+/g, " ")
-    .replace(/[*_`~[\]()]/g, "")
-    .trim()
-    .slice(0, 120);
-}
+export { inferTitleFromMarkdownHeading };
 
 export function inferTitleFromMarkdownUpload({
   content,
