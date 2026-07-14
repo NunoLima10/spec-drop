@@ -14,6 +14,7 @@ import {
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
 import { useState } from "react";
 import { ShareQrCode } from "~/components/share-qr-code";
+import { SiteFooter } from "~/components/site-footer";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -237,11 +238,11 @@ export default function Home() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05060f] text-white">
+    <main className="relative flex min-h-screen flex-col overflow-hidden bg-[#05060f] text-white">
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(186,215,247,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(186,215,247,0.05)_1px,transparent_1px)] bg-[size:84px_84px] [mask-image:radial-gradient(circle_at_top,black,transparent_78%)]" />
       <div className="pointer-events-none absolute inset-x-0 top-[-14rem] mx-auto h-[34rem] max-w-5xl bg-[conic-gradient(from_180deg_at_50%_45%,transparent_0deg,rgba(124,145,182,0.5)_22deg,transparent_52deg)] blur-2xl" />
 
-      <section className="relative mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 py-16 sm:px-6 lg:px-8">
+      <section className="relative mx-auto flex w-full max-w-[1180px] flex-1 flex-col items-center px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
         <header className="text-center">
           <p className="mb-4 text-[#c7d3ea] text-sm uppercase tracking-normal">
             Frosted document handoff
@@ -304,6 +305,8 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      <SiteFooter />
     </main>
   );
 }
