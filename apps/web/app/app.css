@@ -55,6 +55,10 @@ html {
   scroll-behavior: smooth;
 }
 
+html.specdrop-mermaid-fullscreen-open {
+  overflow: hidden;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -255,6 +259,21 @@ html {
   overflow: hidden;
 }
 
+.specdrop-markdown .markdown-body .specdrop-mermaid:fullscreen,
+.specdrop-markdown .markdown-body .specdrop-mermaid.is-fullscreen {
+  background: #f8fafc;
+  border: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  inset: 0;
+  margin: 0;
+  position: fixed;
+  width: 100dvw;
+  z-index: 1000;
+}
+
 .specdrop-markdown .markdown-body .specdrop-mermaid-toolbar {
   align-items: center;
   background: #e2e8f0;
@@ -279,8 +298,15 @@ html {
   height: 2rem;
   justify-content: center;
   line-height: 1;
-  min-width: 2rem;
-  padding: 0 0.625rem;
+  padding: 0;
+  width: 2rem;
+}
+
+.specdrop-markdown .markdown-body .specdrop-mermaid-icon {
+  display: block;
+  height: 1rem;
+  pointer-events: none;
+  width: 1rem;
 }
 
 .specdrop-markdown .markdown-body .specdrop-mermaid-button:hover {
@@ -293,12 +319,25 @@ html {
 }
 
 .specdrop-markdown .markdown-body .specdrop-mermaid-viewport {
+  flex: 1 1 auto;
   cursor: grab;
   max-height: 70vh;
   min-height: 18rem;
   overflow: hidden;
   padding: 1rem;
   touch-action: none;
+}
+
+.specdrop-markdown
+  .markdown-body
+  .specdrop-mermaid:fullscreen
+  .specdrop-mermaid-viewport,
+.specdrop-markdown
+  .markdown-body
+  .specdrop-mermaid.is-fullscreen
+  .specdrop-mermaid-viewport {
+  max-height: none;
+  min-height: 0;
 }
 
 .specdrop-markdown .markdown-body .specdrop-mermaid-viewport.is-panning {
@@ -470,6 +509,11 @@ html {
   .specdrop-markdown .markdown-body .bytemd-mermaid {
     background: #020617;
     border-color: #334155;
+  }
+
+  .specdrop-markdown .markdown-body .specdrop-mermaid:fullscreen,
+  .specdrop-markdown .markdown-body .specdrop-mermaid.is-fullscreen {
+    background: #020617;
   }
 
   .specdrop-markdown .markdown-body .specdrop-mermaid-toolbar {
