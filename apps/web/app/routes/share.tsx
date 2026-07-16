@@ -1,6 +1,7 @@
 import { getSharePreviewBySlug } from "@specdrop/api";
 import {
   CheckIcon,
+  ChevronDownIcon,
   ClockIcon,
   Code2Icon,
   CopyIcon,
@@ -8,10 +9,12 @@ import {
   EyeIcon,
   InfinityIcon,
   QrCodeIcon,
+  SparklesIcon,
   TimerIcon,
   Trash2Icon,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
+import type { ReactNode, SVGProps } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RouterContextProvider } from "react-router";
 import { useParams } from "react-router";
@@ -19,6 +22,7 @@ import { ShareQrCode } from "~/components/share-qr-code";
 import { StatusPage } from "~/components/status-page";
 import { Button } from "~/components/ui/button";
 import { dbContext, originContext } from "~/router-context";
+import { buildAiOpenUrl, buildAiReviewPrompt } from "../ai-open-links";
 import type { MarkdownOutlineItem } from "../markdown-plugins";
 import { MarkdownRenderer } from "../markdown-renderer";
 import { estimateReadingTime } from "../share-metadata";
@@ -337,12 +341,14 @@ export default function Share() {
                   readingTime={readingTime.text}
                 />
                 <ShareActions
+                  content={share.content}
                   copyStatus={copyStatus}
                   mode={previewMode}
                   onCopyMarkdown={handleCopyMarkdown}
                   onDownloadMarkdown={handleDownloadMarkdown}
                   setMode={setPreviewMode}
                   shareUrl={sharePageUrl}
+                  title={title}
                 />
               </header>
 
@@ -385,21 +391,30 @@ export default function Share() {
 }
 
 function ShareActions({
+  content,
   copyStatus,
   mode,
   onCopyMarkdown,
   onDownloadMarkdown,
   setMode,
   shareUrl,
+  title,
 }: {
+  content: string;
   copyStatus: string;
   mode: PreviewMode;
   onCopyMarkdown: () => Promise<void>;
   onDownloadMarkdown: () => void;
   setMode: (mode: PreviewMode) => void;
   shareUrl: string;
+  title: string;
 }) {
   const [isQrOpen, setIsQrOpen] = useState(false);
+  const aiReviewPrompt = buildAiReviewPrompt({
+    content,
+    shareUrl,
+    title,
+  });
 
   return (
     <div className="mt-5">
@@ -434,10 +449,10 @@ function ShareActions({
         </div>
         <Button
           aria-label={copyStatus || "Copy Markdown"}
-          className="size-9 border-[rgba(216,236,248,0.18)] bg-[#05060f]/70 p-0 text-[#d1e4fa] hover:bg-white/10 hover:text-white"
+          className="h-9 border-[rgba(216,236,248,0.18)] bg-[#05060f]/70 px-3 text-[#d1e4fa] hover:bg-white/10 hover:text-white"
           onClick={() => void onCopyMarkdown()}
           size="sm"
-          title={copyStatus || "Copy Markdown"}
+          title={copyStatus || "Copy Page"}
           type="button"
           variant="outline"
         >
@@ -446,7 +461,9 @@ function ShareActions({
           ) : (
             <CopyIcon aria-hidden="true" className="size-4" />
           )}
+          {copyStatus || "Copy Page"}
         </Button>
+        <AiOpenMenu prompt={aiReviewPrompt} />
         <Button
           aria-label="Download Markdown"
           className="size-9 border-[rgba(216,236,248,0.18)] bg-[#05060f]/70 p-0 text-[#d1e4fa] hover:bg-white/10 hover:text-white"
@@ -482,6 +499,105 @@ function ShareActions({
         </div>
       ) : null}
     </div>
+  );
+}
+
+function AiOpenMenu({ prompt }: { prompt: string }) {
+  return (
+    <DropdownMenuPrimitive.Root>
+      <DropdownMenuPrimitive.Trigger asChild>
+        <Button
+          aria-label="Open page actions"
+          className="h-9 border-[rgba(216,236,248,0.18)] bg-[#05060f]/70 px-3 text-[#d1e4fa] hover:bg-white/10 hover:text-white data-[state=open]:bg-white/10"
+          size="sm"
+          title="Open in"
+          type="button"
+          variant="outline"
+        >
+          <SparklesIcon aria-hidden="true" data-icon="inline-start" />
+          Ask AI
+          <ChevronDownIcon aria-hidden="true" data-icon="inline-end" />
+        </Button>
+      </DropdownMenuPrimitive.Trigger>
+      <DropdownMenuPrimitive.Portal>
+        <DropdownMenuPrimitive.Content
+          align="start"
+          className="z-50 min-w-48 rounded-lg border border-[rgba(216,236,248,0.16)] bg-[#111218] p-1 text-[#eef5ff] shadow-[0_18px_48px_rgba(0,0,0,0.36)]"
+          sideOffset={6}
+        >
+          <AiOpenMenuLink
+            href={buildAiOpenUrl("chatgpt", prompt)}
+            icon={<ChatGptLogo className="size-4 text-[#eef5ff]" />}
+          >
+            ChatGPT
+          </AiOpenMenuLink>
+          <AiOpenMenuLink
+            href={buildAiOpenUrl("claude", prompt)}
+            icon={<ClaudeLogo className="size-4" />}
+          >
+            Claude
+          </AiOpenMenuLink>
+        </DropdownMenuPrimitive.Content>
+      </DropdownMenuPrimitive.Portal>
+    </DropdownMenuPrimitive.Root>
+  );
+}
+
+function AiOpenMenuLink({
+  children,
+  href,
+  icon,
+}: {
+  children: ReactNode;
+  href: string;
+  icon: ReactNode;
+}) {
+  return (
+    <DropdownMenuPrimitive.Item asChild>
+      <a
+        className="flex cursor-default items-center gap-2 rounded-md px-2.5 py-2 text-sm outline-none select-none focus:bg-white/10"
+        href={href}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        {icon}
+        {children}
+      </a>
+    </DropdownMenuPrimitive.Item>
+  );
+}
+
+function ChatGptLogo(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      strokeWidth="1.5"
+      viewBox="-0.17090198558635983 0.482230148717937 41.14235318283891 40.0339509076386"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M37.532 16.87a9.963 9.963 0 0 0-.856-8.184 10.078 10.078 0 0 0-10.855-4.835A9.964 9.964 0 0 0 18.306.5a10.079 10.079 0 0 0-9.614 6.977 9.967 9.967 0 0 0-6.664 4.834 10.08 10.08 0 0 0 1.24 11.817 9.965 9.965 0 0 0 .856 8.185 10.079 10.079 0 0 0 10.855 4.835 9.965 9.965 0 0 0 7.516 3.35 10.078 10.078 0 0 0 9.617-6.981 9.967 9.967 0 0 0 6.663-4.834 10.079 10.079 0 0 0-1.243-11.813zM22.498 37.886a7.474 7.474 0 0 1-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 0 0 .655-1.134V19.054l3.366 1.944a.12.12 0 0 1 .066.092v9.299a7.505 7.505 0 0 1-7.49 7.496zm-16.106-6.88a7.471 7.471 0 0 1-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 0 0 1.308 0l9.724-5.614v3.888a.12.12 0 0 1-.048.103l-8.051 4.649a7.504 7.504 0 0 1-10.24-2.744zM4.297 13.62A7.469 7.469 0 0 1 8.2 10.333c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 0 0 .654 1.132l9.723 5.614-3.366 1.944a.12.12 0 0 1-.114.01L7.04 23.856a7.504 7.504 0 0 1-2.743-10.237zm27.658 6.437l-9.724-5.615 3.367-1.943a.121.121 0 0 1 .113-.01l8.052 4.648a7.498 7.498 0 0 1-1.158 13.528v-9.476a1.293 1.293 0 0 0-.65-1.132zm3.35-5.043a7.395 7.395 0 0 0-.236-.141l-7.965-4.6a1.298 1.298 0 0 0-1.308 0l-9.723 5.614v-3.888a.12.12 0 0 1 .048-.103l8.05-4.645a7.497 7.497 0 0 1 11.135 7.763zm-21.063 6.929l-3.367-1.944a.12.12 0 0 1-.065-.092v-9.299a7.497 7.497 0 0 1 12.293-5.756 6.94 6.94 0 0 0-.236.134l-7.965 4.6a1.294 1.294 0 0 0-.654 1.132l-.006 11.225zM16.071 18l4.33-2.501 4.332 2.5v5l-4.331 2.5-4.331-2.5V18z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function ClaudeLogo(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 6.603 1192.672 1193.397"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="m233.96 800.215 234.684-131.678 3.947-11.436-3.947-6.363h-11.436l-39.221-2.416-134.094-3.624-116.296-4.832-112.67-6.04-28.35-6.04-26.577-35.035 2.738-17.477 23.84-16.027 34.147 2.98 75.463 5.155 113.235 7.812 82.147 4.832 121.692 12.644h19.329l2.738-7.812-6.604-4.832-5.154-4.832-117.182-79.41-126.845-83.92-66.443-48.321-35.92-24.484-18.12-22.953-7.813-50.093 32.618-35.92 43.812 2.98 11.195 2.98 44.375 34.147 94.792 73.37 123.786 91.167 18.12 15.06 7.249-5.154.886-3.624-8.135-13.61-67.329-121.692-71.838-123.785-31.974-51.302-8.456-30.765c-2.98-12.645-5.154-23.275-5.154-36.242l37.127-50.416 20.537-6.604 49.53 6.604 20.86 18.121 30.765 70.39 49.852 110.818 77.315 150.684 22.631 44.698 12.08 41.396 4.51 12.645h7.813v-7.248l6.362-84.886 11.759-104.215 11.436-134.094 3.946-37.772 18.685-45.262 37.127-24.482 28.994 13.852 23.839 34.148-3.303 22.067-14.174 92.134-27.785 144.323-18.121 96.644h10.55l12.08-12.08 48.887-64.913 82.147-102.685 36.242-40.752 42.282-45.02 27.14-21.423h51.303l37.772 56.135-16.913 57.986-52.832 67.007-43.812 56.779-62.82 84.563-39.22 67.651 3.623 5.396 9.343-.886 141.906-30.201 76.671-13.852 91.49-15.705 41.396 19.329 4.51 19.65-16.269 40.189-97.852 24.16-114.764 22.954-170.9 40.43-2.093 1.53 2.416 2.98 76.993 7.248 32.94 1.771h80.617l150.12 11.195 39.222 25.933 23.517 31.732-3.946 24.16-60.403 30.766-81.503-19.33-190.228-45.26-65.235-16.27h-9.02v5.397l54.362 53.154 99.624 89.96 124.752 115.973 6.362 28.671-16.027 22.63-16.912-2.415-109.611-82.47-42.282-37.127-95.758-80.618h-6.363v8.456l22.067 32.296 116.537 175.167 6.04 53.719-8.456 17.476-30.201 10.55-33.181-6.04-68.215-95.758-70.39-107.84-56.778-96.644-6.926 3.947-33.503 360.886-15.705 18.443-36.243 13.852-30.201-22.953-16.027-37.127 16.027-73.37 19.329-95.758 15.704-76.107 14.175-94.55 8.456-31.41-.563-2.094-6.927.886-71.275 97.852-108.402 146.497-85.772 91.812-20.537 8.134-35.597-18.443 3.301-32.94 19.893-29.315 118.712-151.007 71.597-93.583 46.228-54.04-.322-7.813h-2.738l-315.302 204.725-56.135 7.248-24.16-22.63 2.98-37.128 11.435-12.08 94.792-65.236-.322.323z"
+        fill="#d97757"
+      />
+    </svg>
   );
 }
 
