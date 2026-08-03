@@ -107,6 +107,60 @@ export async function getSharePreviewBySlug(
   };
 }
 
+export async function readShareBySlug(db: DB, slug: string, now = new Date()) {
+  const share = await db.query.shares.findFirst({
+    where: eq(schema.shares.slug, slug),
+  });
+
+  if (!share || share.deletedAt) {
+    return {
+      status: "not_found" as const,
+      message: "Share not found.",
+    };
+  }
+
+  const unavailableMessage = getUnavailableShareMessage(share, now);
+
+  if (unavailableMessage) {
+    if (!share.deletedAt && unavailableMessage !== "Share was deleted.") {
+      await db
+        .update(schema.shares)
+        .set({ deletedAt: now.toISOString() })
+        .where(eq(schema.shares.id, share.id));
+    }
+
+    return {
+      status: "not_found" as const,
+      message: unavailableMessage,
+    };
+  }
+
+  const viewUpdate = getShareViewUpdate(share, now);
+
+  await db
+    .update(schema.shares)
+    .set({
+      currentViews: sql`${schema.shares.currentViews} + 1`,
+      readAt: viewUpdate.readAt,
+      deletedAt: viewUpdate.deletedAt,
+    })
+    .where(eq(schema.shares.id, share.id));
+
+  return {
+    status: "ready" as const,
+    share: {
+      slug: share.slug,
+      title: share.title,
+      content: share.content,
+      createdAt: share.createdAt,
+      expiresAt: share.expiresAt,
+      deleteAfterRead: share.deleteAfterRead,
+      maxViews: share.maxViews,
+      currentViews: viewUpdate.currentViews,
+    },
+  };
+}
+
 export function getExpiresAt(
   expiresIn: z.infer<typeof expirationOptionSchema>,
   now = new Date(),
@@ -263,55 +317,16 @@ export const shareRouter = router({
   bySlug: publicProcedure
     .input(z.object({ slug: z.string().min(1).max(64) }))
     .query(async ({ ctx, input }) => {
-      const share = await ctx.db.query.shares.findFirst({
-        where: eq(schema.shares.slug, input.slug),
-      });
+      const result = await readShareBySlug(ctx.db, input.slug);
 
-      if (!share || share.deletedAt) {
+      if (result.status === "not_found") {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Share not found.",
+          message: result.message,
         });
       }
 
-      const now = new Date();
-      const unavailableMessage = getUnavailableShareMessage(share, now);
-
-      if (unavailableMessage) {
-        if (!share.deletedAt && unavailableMessage !== "Share was deleted.") {
-          await ctx.db
-            .update(schema.shares)
-            .set({ deletedAt: now.toISOString() })
-            .where(eq(schema.shares.id, share.id));
-        }
-
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: unavailableMessage,
-        });
-      }
-
-      const viewUpdate = getShareViewUpdate(share, now);
-
-      await ctx.db
-        .update(schema.shares)
-        .set({
-          currentViews: sql`${schema.shares.currentViews} + 1`,
-          readAt: viewUpdate.readAt,
-          deletedAt: viewUpdate.deletedAt,
-        })
-        .where(eq(schema.shares.id, share.id));
-
-      return {
-        slug: share.slug,
-        title: share.title,
-        content: share.content,
-        createdAt: share.createdAt,
-        expiresAt: share.expiresAt,
-        deleteAfterRead: share.deleteAfterRead,
-        maxViews: share.maxViews,
-        currentViews: viewUpdate.currentViews,
-      };
+      return result.share;
     }),
 
   delete: publicProcedure

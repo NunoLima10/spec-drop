@@ -3,5 +3,6 @@ export { appRouter } from "./routers/_app.js";
 export {
   cleanupExpiredShares,
   getSharePreviewBySlug,
+  readShareBySlug,
   resolveShareTitle,
 } from "./routers/share.js";

@@ -4,6 +4,7 @@
 
 ### Added
 
+- Add raw Markdown `.md` URLs for shares and AI handoffs.
 - Add shared-page actions for opening Markdown review prompts in ChatGPT and Claude.
 - Add a home page footer with author credit and GitHub repository star link.
 - Add Worker-level rate limiting for share create, read, and delete API calls.
