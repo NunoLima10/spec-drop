@@ -115,6 +115,33 @@ app.use("/trpc/*", async (context, next) => {
   await next();
 });
 
+app.use("/s/*", async (context, next) => {
+  const { pathname } = new URL(context.req.url);
+
+  if (!/^\/s\/[^/]+\.md$/.test(pathname)) {
+    await next();
+    return;
+  }
+
+  const actorKey = getClientRateLimitKey(context);
+  const { success } = await readShareRateLimit.limiter(context.env).limit({
+    key: `${readShareRateLimit.keyPrefix}:${actorKey}`,
+  });
+
+  if (!success) {
+    const response = context.text(readShareRateLimit.message, 429);
+
+    response.headers.set(
+      "Retry-After",
+      `${readShareRateLimit.retryAfterSeconds}`,
+    );
+
+    return response;
+  }
+
+  await next();
+});
+
 app.use(
   "/trpc/*",
   trpcServer({

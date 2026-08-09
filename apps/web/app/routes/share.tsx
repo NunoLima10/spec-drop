@@ -7,6 +7,7 @@ import {
   CopyIcon,
   DownloadIcon,
   EyeIcon,
+  FileTextIcon,
   InfinityIcon,
   QrCodeIcon,
   SparklesIcon,
@@ -22,7 +23,11 @@ import { ShareQrCode } from "~/components/share-qr-code";
 import { StatusPage } from "~/components/status-page";
 import { Button } from "~/components/ui/button";
 import { dbContext, originContext } from "~/router-context";
-import { buildAiOpenUrl, buildAiReviewPrompt } from "../ai-open-links";
+import {
+  buildAiOpenUrl,
+  buildAiReviewPrompt,
+  buildMarkdownFileUrl,
+} from "../ai-open-links";
 import type { MarkdownOutlineItem } from "../markdown-plugins";
 import { MarkdownRenderer } from "../markdown-renderer";
 import { estimateReadingTime } from "../share-metadata";
@@ -295,6 +300,7 @@ export default function Share() {
   const { share } = state;
   const readingTime = estimateReadingTime(share.content);
   const title = share.title || "Untitled Markdown";
+  const markdownUrl = buildMarkdownFileUrl(sharePageUrl);
 
   async function handleCopyMarkdown() {
     const didCopy = await copyMarkdownToClipboard(share.content);
@@ -347,6 +353,7 @@ export default function Share() {
                   onCopyMarkdown={handleCopyMarkdown}
                   onDownloadMarkdown={handleDownloadMarkdown}
                   setMode={setPreviewMode}
+                  markdownUrl={markdownUrl}
                   shareUrl={sharePageUrl}
                   title={title}
                 />
@@ -397,6 +404,7 @@ function ShareActions({
   onCopyMarkdown,
   onDownloadMarkdown,
   setMode,
+  markdownUrl,
   shareUrl,
   title,
 }: {
@@ -406,12 +414,14 @@ function ShareActions({
   onCopyMarkdown: () => Promise<void>;
   onDownloadMarkdown: () => void;
   setMode: (mode: PreviewMode) => void;
+  markdownUrl: string;
   shareUrl: string;
   title: string;
 }) {
   const [isQrOpen, setIsQrOpen] = useState(false);
   const aiReviewPrompt = buildAiReviewPrompt({
     content,
+    markdownUrl,
     shareUrl,
     title,
   });
@@ -464,6 +474,20 @@ function ShareActions({
           {copyStatus || "Copy Page"}
         </Button>
         <AiOpenMenu prompt={aiReviewPrompt} />
+        {markdownUrl ? (
+          <Button
+            asChild
+            className="h-9 border-[rgba(216,236,248,0.18)] bg-[#05060f]/70 px-3 text-[#d1e4fa] hover:bg-white/10 hover:text-white"
+            size="sm"
+            title="Open raw Markdown"
+            variant="outline"
+          >
+            <a href={markdownUrl} rel="noopener noreferrer" target="_blank">
+              <FileTextIcon aria-hidden="true" data-icon="inline-start" />
+              Raw .md
+            </a>
+          </Button>
+        ) : null}
         <Button
           aria-label="Download Markdown"
           className="size-9 border-[rgba(216,236,248,0.18)] bg-[#05060f]/70 p-0 text-[#d1e4fa] hover:bg-white/10 hover:text-white"

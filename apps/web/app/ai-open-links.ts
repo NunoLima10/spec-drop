@@ -4,10 +4,12 @@ export type AiOpenProvider = "chatgpt" | "claude";
 
 export function buildAiReviewPrompt({
   content,
+  markdownUrl,
   shareUrl,
   title,
 }: {
   content: string;
+  markdownUrl: string;
   shareUrl: string;
   title: string;
 }) {
@@ -23,10 +25,11 @@ export function buildAiReviewPrompt({
     "Offer concise options such as summarizing the context, answering questions, extracting decisions, or listing implementation tasks.",
     shouldInlineMarkdown
       ? "The complete Markdown is included below because it is short."
-      : "Use the source URL for the document. If you cannot access it, ask the user to paste the relevant section before answering detailed questions.",
+      : "Use the raw Markdown URL for the exact document source. If you cannot access it, ask the user to paste the relevant section before answering detailed questions.",
     "",
     `Title: ${title}`,
-    shareUrl ? `Source URL: ${shareUrl}` : "",
+    markdownUrl ? `Raw Markdown URL: ${markdownUrl}` : "",
+    shareUrl ? `Rendered page URL: ${shareUrl}` : "",
     "",
     shouldInlineMarkdown ? "Markdown:" : "",
     shouldInlineMarkdown ? normalizedContent : "",
@@ -44,4 +47,22 @@ export function buildAiOpenUrl(provider: AiOpenProvider, prompt: string) {
   url.searchParams.set(provider === "chatgpt" ? "prompt" : "q", prompt);
 
   return url.toString();
+}
+
+export function buildMarkdownFileUrl(shareUrl: string) {
+  if (!shareUrl) {
+    return "";
+  }
+
+  try {
+    const url = new URL(shareUrl);
+
+    url.pathname = `${url.pathname.replace(/\/$/, "")}.md`;
+    url.search = "";
+    url.hash = "";
+
+    return url.toString();
+  } catch {
+    return "";
+  }
 }
