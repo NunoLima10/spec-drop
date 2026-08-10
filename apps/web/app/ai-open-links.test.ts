@@ -59,6 +59,18 @@ describe("AI open links", () => {
     expect(prompt.length).toBeLessThan(700);
   });
 
+  it("derives the raw Markdown URL when callers only pass the rendered URL", () => {
+    const prompt = buildAiReviewPrompt({
+      content: "a".repeat(5000),
+      shareUrl: "https://specdrop.test/s/abc123",
+      title: "Large Spec",
+    });
+
+    expect(prompt).toContain(
+      "Raw Markdown URL: https://specdrop.test/s/abc123.md",
+    );
+  });
+
   it("builds raw Markdown URLs from shared page URLs", () => {
     expect(buildMarkdownFileUrl("https://specdrop.test/s/abc123")).toBe(
       "https://specdrop.test/s/abc123.md",
