@@ -9,11 +9,12 @@ export function buildAiReviewPrompt({
   title,
 }: {
   content: string;
-  markdownUrl: string;
+  markdownUrl?: string;
   shareUrl: string;
   title: string;
 }) {
   const normalizedContent = content.trim();
+  const rawMarkdownUrl = markdownUrl || buildMarkdownFileUrl(shareUrl);
   const shouldInlineMarkdown =
     normalizedContent.length > 0 &&
     normalizedContent.length <= inlineMarkdownMaxLength;
@@ -28,7 +29,7 @@ export function buildAiReviewPrompt({
       : "Use the raw Markdown URL for the exact document source. If you cannot access it, ask the user to paste the relevant section before answering detailed questions.",
     "",
     `Title: ${title}`,
-    markdownUrl ? `Raw Markdown URL: ${markdownUrl}` : "",
+    rawMarkdownUrl ? `Raw Markdown URL: ${rawMarkdownUrl}` : "",
     shareUrl ? `Rendered page URL: ${shareUrl}` : "",
     "",
     shouldInlineMarkdown ? "Markdown:" : "",

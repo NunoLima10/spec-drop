@@ -18,7 +18,7 @@ import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 import type { ReactNode, SVGProps } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RouterContextProvider } from "react-router";
-import { useParams } from "react-router";
+import { useLoaderData, useParams } from "react-router";
 import { ShareQrCode } from "~/components/share-qr-code";
 import { StatusPage } from "~/components/status-page";
 import { Button } from "~/components/ui/button";
@@ -224,7 +224,7 @@ export default function Share() {
   const [outline, setOutline] = useState<MarkdownOutlineItem[]>([]);
   const [previewMode, setPreviewMode] = useState<PreviewMode>("render");
   const [copyStatus, setCopyStatus] = useState("");
-  const [sharePageUrl, setSharePageUrl] = useState("");
+  const { canonicalUrl: sharePageUrl } = useLoaderData<ShareLoaderData>();
   const handleOutlineChange = useCallback((items: MarkdownOutlineItem[]) => {
     setOutline((currentItems) =>
       outlinesAreEqual(currentItems, items) ? currentItems : items,
@@ -277,10 +277,6 @@ export default function Share() {
       window.clearTimeout(timeoutId);
     };
   }, [copyStatus]);
-
-  useEffect(() => {
-    setSharePageUrl(window.location.href);
-  }, []);
 
   if (state.status === "loading") {
     return <ShareLoadingSkeleton />;
