@@ -38,7 +38,7 @@ export async function loader({
       "content-disposition": `inline; filename="${getMarkdownFileName(
         result.share.title,
       )}"`,
-      "content-type": "text/markdown; charset=utf-8",
+      "content-type": "text/plain; charset=utf-8",
       "x-content-type-options": "nosniff",
     },
   });
