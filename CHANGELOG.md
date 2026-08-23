@@ -28,6 +28,7 @@
 
 ### Changed
 
+- Split share API routing into schema, controller, and service modules.
 - Serve raw `.md` share URLs as plain UTF-8 text for AI client compatibility.
 - Remove the decorative frame around generated share QR codes.
 - Reduce QR code panel sizing on generated-share and public share pages.
