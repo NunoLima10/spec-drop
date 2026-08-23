@@ -1,4 +1,0 @@
-{
-  "extends": "@specdrop/tsconfig/node",
-  "include": ["src/**/*.ts"]
-}

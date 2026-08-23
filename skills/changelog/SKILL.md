@@ -37,7 +37,6 @@ published.
 | `packages/api/` | root `CHANGELOG.md` |
 | `packages/db/` | root `CHANGELOG.md` |
 | `packages/markdown/` | root `CHANGELOG.md` |
-| `packages/config/` | root `CHANGELOG.md` when behavior, setup, or contributor workflow changes |
 | `packages/tsconfig/` | root `CHANGELOG.md` when runtime or tooling support changes |
 | `specs/`, `reports.md`, `AGENTS.md`, `CLAUDE.md`, `skills/` | root `CHANGELOG.md` when they change product direction, workflow, or contributor guidance |
 | Cross-cutting product milestone or coordinated version bump | root `CHANGELOG.md` |
