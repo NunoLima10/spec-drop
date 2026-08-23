@@ -45,6 +45,7 @@
 
 ### Removed
 
+- Remove the unused shared config workspace package.
 - Remove redundant README intro copy, design intent panel, and raw storage step from the home page.
 
 ### Fixed

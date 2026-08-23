@@ -28,7 +28,6 @@ packages/
   api/
   db/
   markdown/
-  config/
   tsconfig/
 ```
 
@@ -38,7 +37,6 @@ Initial package responsibilities:
 - `packages/api`: tRPC routers, procedures, input validation, API context.
 - `packages/db`: Drizzle schemas, database client, migrations, seeds, DBML helpers.
 - `packages/markdown`: Markdown renderer configuration, sanitizer rules, shared Markdown utilities.
-- `packages/config`: shared environment parsing and constants.
 - `packages/tsconfig`: shared TypeScript configuration.
 
 ## Frontend
@@ -288,7 +286,7 @@ Recommended tools:
 - Vitest for unit tests.
 - Playwright for smoke and rendering tests.
 - Drizzle migrations for schema changes.
-- Environment validation through a shared config package.
+- Runtime configuration through Cloudflare bindings and checked deployment configuration.
 
 Recommended scripts:
 

@@ -19,7 +19,6 @@ apps/
   web/            React Router, Hono, Vite, Cloudflare Worker app
 packages/
   api/            tRPC routers and typed API contracts
-  config/         Shared environment parsing
   db/             Drizzle D1 schema and migration workflow
   markdown/       Shared Markdown utilities
   tsconfig/       Shared TypeScript configuration
