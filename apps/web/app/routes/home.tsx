@@ -52,7 +52,7 @@ import type { Route } from "./+types/home";
 type ShareExpiration = "never" | "1h" | "24h" | "7d" | "30d";
 type PreviewMode = "render" | "code";
 
-const homeReadmeMarkdown = `# this.readme.md
+const homeReadmeMarkdown = `# readme.md
 
 SpecsDrop turns a local Markdown file into a polished, read-only web page that is easy to send to a teammate, reviewer, stakeholder, phone, tablet, or AI agent.
 
@@ -60,8 +60,7 @@ SpecsDrop turns a local Markdown file into a polished, read-only web page that i
 
 \`\`\`mermaid
 flowchart LR
-  markdown["Drop README.md"] --> store["Store raw Markdown"]
-  store --> render["Render safely in the browser"]
+  markdown["Drop README.md"] --> render["Render safely in the browser"]
   render --> share["Share the URL"]
   share --> read["Read on desktop or mobile"]
 \`\`\`
@@ -491,58 +490,17 @@ function getShareHistoryPath(url: string) {
 function HomeReadme() {
   return (
     <section
-      aria-labelledby="home-readme-title"
+      aria-label="Rendered SpecsDrop README"
       className="mt-16 w-full max-w-5xl sm:mt-20"
     >
-      <div className="mb-5 flex flex-col gap-3 border-[rgba(216,236,248,0.14)] border-t pt-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="mb-2 inline-flex items-center gap-2 text-[#c7d3ea] text-sm uppercase tracking-normal">
-            <BookOpenIcon aria-hidden="true" className="size-4" />
-            Rendered with SpecsDrop
-          </p>
-          <h2
-            className="font-medium text-3xl text-white leading-tight tracking-normal sm:text-4xl"
-            id="home-readme-title"
-          >
-            A README-style product explanation
-          </h2>
-        </div>
-        <p className="max-w-md text-[#9da7ba] text-sm leading-6 sm:text-right">
-          The same Markdown pipeline used for shared documents renders this
-          guide, so new users can see tables, checklists, code, and flow charts
-          before uploading anything.
-        </p>
-      </div>
+      <p className="mb-5 inline-flex items-center gap-2 text-[#c7d3ea] text-sm uppercase tracking-normal">
+        <BookOpenIcon aria-hidden="true" className="size-4" />
+        Rendered with SpecsDrop
+      </p>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start">
-        <article className="specdrop-reader specdrop-readme rounded-xl border border-[rgba(216,236,248,0.16)] bg-[#070914] p-4 shadow-[inset_0_1px_1px_rgba(199,211,234,0.12),inset_0_24px_48px_rgba(199,211,234,0.05),0_24px_32px_rgba(6,6,14,0.7)] sm:p-6">
-          <MarkdownRenderer content={homeReadmeMarkdown} />
-        </article>
-
-        <aside className="rounded-xl border border-[rgba(216,236,248,0.14)] bg-[#070914]/72 p-4 text-sm text-[#c7d3ea] shadow-[inset_0_1px_1px_rgba(199,211,234,0.1)]">
-          <p className="font-medium text-white">Design intent</p>
-          <dl className="mt-4 space-y-4">
-            <div>
-              <dt className="text-[#9da7ba]">Placement</dt>
-              <dd className="mt-1">
-                Below the uploader, after the main action.
-              </dd>
-            </div>
-            <div>
-              <dt className="text-[#9da7ba]">Format</dt>
-              <dd className="mt-1">
-                A real Markdown document, not static copy.
-              </dd>
-            </div>
-            <div>
-              <dt className="text-[#9da7ba]">Mobile</dt>
-              <dd className="mt-1">
-                Narrow measure, scrollable tables, and compact diagram framing.
-              </dd>
-            </div>
-          </dl>
-        </aside>
-      </div>
+      <article className="specdrop-reader specdrop-readme rounded-xl border border-[rgba(216,236,248,0.16)] bg-[#070914] p-4 shadow-[inset_0_1px_1px_rgba(199,211,234,0.12),inset_0_24px_48px_rgba(199,211,234,0.05),0_24px_32px_rgba(6,6,14,0.7)] sm:p-6">
+        <MarkdownRenderer content={homeReadmeMarkdown} />
+      </article>
     </section>
   );
 }

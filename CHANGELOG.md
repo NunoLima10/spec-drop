@@ -43,6 +43,10 @@
 - Advance the roadmap from Phase 1 Core Share MVP to Phase 2 Markdown quality and safety.
 - Switch the initial database target from PostgreSQL to Cloudflare D1.
 
+### Removed
+
+- Remove redundant README intro copy, design intent panel, and raw storage step from the home page.
+
 ### Fixed
 
 - Prevent shared Markdown page scrolling from re-rendering Mermaid diagrams.
