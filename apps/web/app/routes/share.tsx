@@ -30,6 +30,7 @@ import {
 } from "../ai-open-links";
 import type { MarkdownOutlineItem } from "../markdown-plugins";
 import { MarkdownRenderer } from "../markdown-renderer";
+import { saveShareHistoryItem } from "../share-history";
 import { estimateReadingTime } from "../share-metadata";
 import { trpc } from "../trpc";
 
@@ -277,6 +278,22 @@ export default function Share() {
       window.clearTimeout(timeoutId);
     };
   }, [copyStatus]);
+
+  useEffect(() => {
+    if (state.status !== "ready" || !slug) {
+      return;
+    }
+
+    saveShareHistoryItem({
+      slug,
+      title: state.share.title,
+      url: sharePageUrl,
+      expiresAt: state.share.expiresAt,
+      deleteAfterRead: state.share.deleteAfterRead,
+      maxViews: state.share.maxViews,
+      source: "opened",
+    });
+  }, [sharePageUrl, slug, state]);
 
   if (state.status === "loading") {
     return <ShareLoadingSkeleton />;

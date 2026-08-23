@@ -1,5 +1,6 @@
 import {
   ArrowRightIcon,
+  BookOpenIcon,
   CheckIcon,
   ChevronDownIcon,
   Code2Icon,
@@ -8,12 +9,14 @@ import {
   EyeIcon,
   FileTextIcon,
   FileUpIcon,
+  HistoryIcon,
   PlusIcon,
   Settings2Icon,
   Trash2Icon,
+  XIcon,
 } from "lucide-react";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ShareQrCode } from "~/components/share-qr-code";
 import { SiteFooter } from "~/components/site-footer";
 import { Button } from "~/components/ui/button";
@@ -30,6 +33,14 @@ import { Switch } from "~/components/ui/switch";
 import { Textarea } from "~/components/ui/textarea";
 import { buildMarkdownFileUrl } from "../ai-open-links";
 import { MarkdownRenderer } from "../markdown-renderer";
+import {
+  clearShareHistory,
+  readShareHistory,
+  removeShareHistoryItem,
+  SHARE_HISTORY_STORAGE_KEY,
+  type ShareHistoryItem,
+  saveShareHistoryItem,
+} from "../share-history";
 import { trpc } from "../trpc";
 import {
   getMarkdownFileError,
@@ -40,6 +51,44 @@ import type { Route } from "./+types/home";
 
 type ShareExpiration = "never" | "1h" | "24h" | "7d" | "30d";
 type PreviewMode = "render" | "code";
+
+const homeReadmeMarkdown = `# this.readme.md
+
+SpecsDrop turns a local Markdown file into a polished, read-only web page that is easy to send to a teammate, reviewer, stakeholder, phone, tablet, or AI agent.
+
+## The publishing loop
+
+\`\`\`mermaid
+flowchart LR
+  markdown["Drop README.md"] --> store["Store raw Markdown"]
+  store --> render["Render safely in the browser"]
+  render --> share["Share the URL"]
+  share --> read["Read on desktop or mobile"]
+\`\`\`
+
+## What the page keeps intact
+
+| Markdown feature | Why it matters for technical docs |
+| --- | --- |
+| Tables | Compare decisions, tradeoffs, options, and API fields. |
+| Task lists | Ship specs with visible implementation checkpoints. |
+| Code blocks | Keep commands, config, snippets, and examples readable. |
+| Mermaid diagrams | Show architecture, sequence, and release flows inline. |
+
+## Built for short handoffs
+
+- [x] Upload or paste Markdown.
+- [x] Generate a shareable URL.
+- [x] Keep raw Markdown as the source of truth.
+- [x] Apply safe rendering, syntax highlighting, tables, and diagrams.
+- [x] Make the shared page readable on mobile devices.
+
+\`\`\`ts
+const url = await specdrop.publish("implementation-plan.md");
+await navigator.clipboard.writeText(url);
+\`\`\`
+
+Use it when the document is ready to be read, but not ready to become a repo commit, pull request, gist, or long-lived document workspace.`;
 
 type ComposerProps = {
   canCreate: boolean;
@@ -90,7 +139,24 @@ export default function Home() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
   const [previewMode, setPreviewMode] = useState<PreviewMode>("render");
+  const [shareHistory, setShareHistory] = useState<ShareHistoryItem[]>([]);
   const canCreate = content.trim().length > 0 && !isCreating;
+
+  useEffect(() => {
+    setShareHistory(readShareHistory());
+
+    function handleStorage(event: StorageEvent) {
+      if (event.key === SHARE_HISTORY_STORAGE_KEY) {
+        setShareHistory(readShareHistory());
+      }
+    }
+
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
 
   function updateContent(nextContent: string) {
     setContent(nextContent);
@@ -197,6 +263,17 @@ export default function Home() {
 
       setShareUrl(share.url);
       setShareSlug(share.slug);
+      setShareHistory(
+        saveShareHistoryItem({
+          slug: share.slug,
+          title: share.title ?? title,
+          url: share.url,
+          expiresAt: share.expiresAt,
+          deleteAfterRead: share.deleteAfterRead,
+          maxViews: share.maxViews,
+          source: "generated",
+        }),
+      );
     } catch (createError) {
       setError(
         createError instanceof Error
@@ -227,6 +304,7 @@ export default function Home() {
 
     try {
       await trpc.share.delete.mutate({ slug: shareSlug });
+      setShareHistory(removeShareHistoryItem(shareSlug));
       handleNewMarkdown();
     } catch (deleteError) {
       setError(
@@ -237,6 +315,14 @@ export default function Home() {
     } finally {
       setIsDeleting(false);
     }
+  }
+
+  function handleRemoveHistoryItem(slug: string) {
+    setShareHistory(removeShareHistoryItem(slug));
+  }
+
+  function handleClearHistory() {
+    setShareHistory(clearShareHistory());
   }
 
   return (
@@ -306,10 +392,158 @@ export default function Home() {
             </>
           )}
         </div>
+
+        <ShareHistory
+          items={shareHistory}
+          onClear={handleClearHistory}
+          onRemove={handleRemoveHistoryItem}
+        />
+
+        <HomeReadme />
       </section>
 
       <SiteFooter />
     </main>
+  );
+}
+
+function ShareHistory({
+  items,
+  onClear,
+  onRemove,
+}: {
+  items: ShareHistoryItem[];
+  onClear: () => void;
+  onRemove: (slug: string) => void;
+}) {
+  if (!items.length) {
+    return null;
+  }
+
+  return (
+    <section
+      aria-labelledby="share-history-title"
+      className="mt-8 w-full max-w-5xl"
+    >
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2
+          className="inline-flex items-center gap-2 font-medium text-[#d8ecf8] text-sm uppercase tracking-normal"
+          id="share-history-title"
+        >
+          <HistoryIcon aria-hidden="true" className="size-4" />
+          Local storage history
+        </h2>
+        <Button
+          className="h-8 border-[rgba(216,236,248,0.16)] bg-[#070914]/80 px-2.5 text-[#9da7ba] hover:bg-[#101328] hover:text-white"
+          onClick={onClear}
+          size="sm"
+          type="button"
+          variant="outline"
+        >
+          <Trash2Icon aria-hidden="true" data-icon="inline-start" />
+          Clear all
+        </Button>
+      </div>
+
+      <ol className="grid gap-2">
+        {items.map((item) => (
+          <li
+            className="flex min-w-0 items-center gap-3 rounded-lg border border-[rgba(216,236,248,0.14)] bg-[#070914]/84 px-3 py-2 shadow-[inset_0_1px_1px_rgba(199,211,234,0.08)]"
+            key={item.slug}
+          >
+            <a
+              className="min-w-0 flex-1 py-1 text-[#d1e4fa] hover:text-white"
+              href={item.url}
+            >
+              <span className="block truncate font-medium text-sm">
+                {item.title}
+              </span>
+              <span className="mt-0.5 block truncate text-[#9da7ba] text-xs">
+                {getShareHistoryPath(item.url)} -{" "}
+                {new Date(item.updatedAt).toLocaleString()}
+              </span>
+            </a>
+            <Button
+              aria-label={`Remove ${item.title} from history`}
+              className="size-8 border-[rgba(216,236,248,0.16)] bg-transparent p-0 text-[#9da7ba] hover:bg-white/10 hover:text-white"
+              onClick={() => onRemove(item.slug)}
+              title="Remove"
+              type="button"
+              variant="outline"
+            >
+              <XIcon aria-hidden="true" className="size-4" />
+            </Button>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function getShareHistoryPath(url: string) {
+  try {
+    return new URL(url).pathname;
+  } catch {
+    return url;
+  }
+}
+
+function HomeReadme() {
+  return (
+    <section
+      aria-labelledby="home-readme-title"
+      className="mt-16 w-full max-w-5xl sm:mt-20"
+    >
+      <div className="mb-5 flex flex-col gap-3 border-[rgba(216,236,248,0.14)] border-t pt-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="mb-2 inline-flex items-center gap-2 text-[#c7d3ea] text-sm uppercase tracking-normal">
+            <BookOpenIcon aria-hidden="true" className="size-4" />
+            Rendered with SpecsDrop
+          </p>
+          <h2
+            className="font-medium text-3xl text-white leading-tight tracking-normal sm:text-4xl"
+            id="home-readme-title"
+          >
+            A README-style product explanation
+          </h2>
+        </div>
+        <p className="max-w-md text-[#9da7ba] text-sm leading-6 sm:text-right">
+          The same Markdown pipeline used for shared documents renders this
+          guide, so new users can see tables, checklists, code, and flow charts
+          before uploading anything.
+        </p>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start">
+        <article className="specdrop-reader specdrop-readme rounded-xl border border-[rgba(216,236,248,0.16)] bg-[#070914] p-4 shadow-[inset_0_1px_1px_rgba(199,211,234,0.12),inset_0_24px_48px_rgba(199,211,234,0.05),0_24px_32px_rgba(6,6,14,0.7)] sm:p-6">
+          <MarkdownRenderer content={homeReadmeMarkdown} />
+        </article>
+
+        <aside className="rounded-xl border border-[rgba(216,236,248,0.14)] bg-[#070914]/72 p-4 text-sm text-[#c7d3ea] shadow-[inset_0_1px_1px_rgba(199,211,234,0.1)]">
+          <p className="font-medium text-white">Design intent</p>
+          <dl className="mt-4 space-y-4">
+            <div>
+              <dt className="text-[#9da7ba]">Placement</dt>
+              <dd className="mt-1">
+                Below the uploader, after the main action.
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[#9da7ba]">Format</dt>
+              <dd className="mt-1">
+                A real Markdown document, not static copy.
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[#9da7ba]">Mobile</dt>
+              <dd className="mt-1">
+                Narrow measure, scrollable tables, and compact diagram framing.
+              </dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </section>
   );
 }
 

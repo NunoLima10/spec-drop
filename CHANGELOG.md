@@ -4,6 +4,8 @@
 
 ### Added
 
+- Add local browser history for stable generated and opened share links.
+- Add a README-style Markdown explanation to the home page.
 - Add raw Markdown `.md` URLs for shares and AI handoffs.
 - Add shared-page actions for opening Markdown review prompts in ChatGPT and Claude.
 - Add a home page footer with author credit and GitHub repository star link.
