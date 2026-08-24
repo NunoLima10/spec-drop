@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { getReadingProgress, getSharePageTitle, meta } from "./share";
+import { getReadingProgress } from "../reading-progress";
+import { getSharePageTitle, meta } from "./share";
 
 function getMetaContent(
   descriptors: ReturnType<typeof meta>,

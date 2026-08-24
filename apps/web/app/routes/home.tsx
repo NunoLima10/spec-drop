@@ -32,7 +32,13 @@ import {
 import { Switch } from "~/components/ui/switch";
 import { Textarea } from "~/components/ui/textarea";
 import { buildMarkdownFileUrl } from "../ai-open-links";
+import { copyTextToClipboard } from "../clipboard";
 import { MarkdownRenderer } from "../markdown-renderer";
+import {
+  buildCreateShareInput,
+  getCreateShareClientError,
+  type ShareExpiration,
+} from "../share-form";
 import {
   clearShareHistory,
   readShareHistory,
@@ -49,7 +55,6 @@ import {
 } from "../upload-utils";
 import type { Route } from "./+types/home";
 
-type ShareExpiration = "never" | "1h" | "24h" | "7d" | "30d";
 type PreviewMode = "render" | "code";
 
 const homeReadmeMarkdown = `# readme.md
@@ -240,8 +245,10 @@ export default function Home() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!content.trim()) {
-      setError("Paste or drop Markdown before generating a share URL.");
+    const clientError = getCreateShareClientError({ content, maxViews });
+
+    if (clientError) {
+      setError(clientError);
       return;
     }
 
@@ -252,13 +259,15 @@ export default function Home() {
     setCopyStatus("");
 
     try {
-      const share = await trpc.share.create.mutate({
-        title: title || undefined,
-        content,
-        expiresIn,
-        deleteAfterRead,
-        maxViews: maxViews ? Number(maxViews) : undefined,
-      });
+      const share = await trpc.share.create.mutate(
+        buildCreateShareInput({
+          title,
+          content,
+          expiresIn,
+          deleteAfterRead,
+          maxViews,
+        }),
+      );
 
       setShareUrl(share.url);
       setShareSlug(share.slug);
@@ -289,8 +298,8 @@ export default function Home() {
       return;
     }
 
-    await navigator.clipboard.writeText(shareUrl);
-    setCopyStatus("Copied");
+    const didCopy = await copyTextToClipboard(shareUrl);
+    setCopyStatus(didCopy ? "Copied" : "Copy failed");
   }
 
   async function handleDeleteShare() {

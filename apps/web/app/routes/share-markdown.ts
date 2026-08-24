@@ -1,6 +1,7 @@
 import { readShareBySlug } from "@specdrop/api";
 import type { RouterContextProvider } from "react-router";
 import { dbContext } from "~/router-context";
+import { getMarkdownFileName } from "../share-file";
 
 export async function loader({
   context,
@@ -42,14 +43,4 @@ export async function loader({
       "x-content-type-options": "nosniff",
     },
   });
-}
-
-function getMarkdownFileName(title: string | null) {
-  const baseName = (title || "shared-markdown")
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
-  return `${baseName || "shared-markdown"}.md`;
 }

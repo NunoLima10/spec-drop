@@ -28,8 +28,11 @@ import {
   buildAiReviewPrompt,
   buildMarkdownFileUrl,
 } from "../ai-open-links";
+import { copyTextToClipboard } from "../clipboard";
 import type { MarkdownOutlineItem } from "../markdown-plugins";
 import { MarkdownRenderer } from "../markdown-renderer";
+import { getReadingProgress } from "../reading-progress";
+import { downloadMarkdownFile } from "../share-file";
 import { saveShareHistoryItem } from "../share-history";
 import { estimateReadingTime } from "../share-metadata";
 import { trpc } from "../trpc";
@@ -201,24 +204,6 @@ function ReadingProgressBar() {
   );
 }
 
-export function getReadingProgress({
-  scrollHeight,
-  scrollY,
-  viewportHeight,
-}: {
-  scrollHeight: number;
-  scrollY: number;
-  viewportHeight: number;
-}) {
-  const scrollable = scrollHeight - viewportHeight;
-
-  if (scrollable <= 0) {
-    return 100;
-  }
-
-  return Math.min(100, Math.max(0, (scrollY / scrollable) * 100));
-}
-
 export default function Share() {
   const { slug } = useParams();
   const [state, setState] = useState<ShareState>({ status: "loading" });
@@ -316,22 +301,12 @@ export default function Share() {
   const markdownUrl = buildMarkdownFileUrl(sharePageUrl);
 
   async function handleCopyMarkdown() {
-    const didCopy = await copyMarkdownToClipboard(share.content);
+    const didCopy = await copyTextToClipboard(share.content);
     setCopyStatus(didCopy ? "Copied" : "Copy failed");
   }
 
   function handleDownloadMarkdown() {
-    const fileName = `${toMarkdownFileName(title)}.md`;
-    const blob = new Blob([share.content], {
-      type: "text/markdown;charset=utf-8",
-    });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-
-    anchor.href = url;
-    anchor.download = fileName;
-    anchor.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    downloadMarkdownFile({ content: share.content, title });
   }
 
   return (
@@ -782,39 +757,6 @@ function ShareLoadingSkeleton() {
       </div>
     </main>
   );
-}
-
-function toMarkdownFileName(title: string) {
-  const fileName = title
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
-  return fileName || "shared-markdown";
-}
-
-async function copyMarkdownToClipboard(content: string) {
-  try {
-    await navigator.clipboard.writeText(content);
-    return true;
-  } catch {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = content;
-    textarea.setAttribute("readonly", "");
-    textarea.style.left = "-9999px";
-    textarea.style.position = "fixed";
-    textarea.style.top = "0";
-    document.body.appendChild(textarea);
-    textarea.select();
-
-    try {
-      return document.execCommand("copy");
-    } finally {
-      textarea.remove();
-    }
-  }
 }
 
 function outlinesAreEqual(
