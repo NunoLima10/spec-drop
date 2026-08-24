@@ -2,7 +2,7 @@ import type { ViewerProps } from "bytemd";
 import type { ComponentType } from "react";
 import { memo, useEffect, useState } from "react";
 import "bytemd/dist/index.css";
-import type { MarkdownOutlineItem } from "./markdown-plugins";
+import type { MarkdownOutlineItem } from "./plugins";
 
 type SanitizeSchema = Parameters<NonNullable<ViewerProps["sanitize"]>>[0];
 type MarkdownViewer = ComponentType<ViewerProps>;
@@ -71,7 +71,7 @@ function MarkdownRendererComponent({
         import("@bytemd/plugin-highlight-ssr"),
         import("@bytemd/plugin-math"),
         import("@bytemd/plugin-mermaid"),
-        import("./markdown-plugins"),
+        import("./plugins"),
       ]);
       const mermaidTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches

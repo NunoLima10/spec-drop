@@ -164,11 +164,18 @@ export function mermaidControlsPlugin(): BytemdPlugin {
       appendSvgChild(svg, "line", { x1: "20", x2: "14", y1: "4", y2: "10" });
       appendSvgChild(svg, "line", { x1: "4", x2: "10", y1: "20", y2: "14" });
     } else if (icon === "reset") {
-      appendSvgChild(svg, "path", { d: "M3 12a9 9 0 1 0 9-9 9.8 9.8 0 0 0-6.7 2.6" });
+      appendSvgChild(svg, "path", {
+        d: "M3 12a9 9 0 1 0 9-9 9.8 9.8 0 0 0-6.7 2.6",
+      });
       appendSvgChild(svg, "polyline", { points: "3 3 3 9 9 9" });
     } else {
       appendSvgChild(svg, "circle", { cx: "11", cy: "11", r: "8" });
-      appendSvgChild(svg, "line", { x1: "21", x2: "16.65", y1: "21", y2: "16.65" });
+      appendSvgChild(svg, "line", {
+        x1: "21",
+        x2: "16.65",
+        y1: "21",
+        y2: "16.65",
+      });
       appendSvgChild(svg, "line", { x1: "8", x2: "14", y1: "11", y2: "11" });
 
       if (icon === "zoomIn") {
@@ -444,10 +451,8 @@ export function mermaidControlsPlugin(): BytemdPlugin {
       const pointers = Array.from(activePointers.values());
 
       if (pointers.length === 1) {
-        offsetX =
-          gestureStart.offsetX + event.clientX - gestureStart.midpointX;
-        offsetY =
-          gestureStart.offsetY + event.clientY - gestureStart.midpointY;
+        offsetX = gestureStart.offsetX + event.clientX - gestureStart.midpointX;
+        offsetY = gestureStart.offsetY + event.clientY - gestureStart.midpointY;
       } else if (pointers.length >= 2 && gestureStart.distance > 0) {
         const [firstPointer, secondPointer] = pointers;
 

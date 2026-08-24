@@ -3,7 +3,7 @@ import { appRouter, cleanupExpiredShares } from "@specdrop/api";
 import { createDb } from "@specdrop/db";
 import { Hono } from "hono";
 import { createRequestHandler, RouterContextProvider } from "react-router";
-import { dbContext, originContext } from "../app/router-context";
+import { dbContext, originContext } from "../app/lib/router-context";
 
 type Bindings = {
   DB: D1Database;

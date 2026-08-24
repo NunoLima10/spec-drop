@@ -1,3 +1,5 @@
+import { buildMarkdownFileUrl } from "../shares/share-links";
+
 const inlineMarkdownMaxLength = 1500;
 
 export type AiOpenProvider = "chatgpt" | "claude";
@@ -48,22 +50,4 @@ export function buildAiOpenUrl(provider: AiOpenProvider, prompt: string) {
   url.searchParams.set(provider === "chatgpt" ? "prompt" : "q", prompt);
 
   return url.toString();
-}
-
-export function buildMarkdownFileUrl(shareUrl: string) {
-  if (!shareUrl) {
-    return "";
-  }
-
-  try {
-    const url = new URL(shareUrl);
-
-    url.pathname = `${url.pathname.replace(/\/$/, "")}.md`;
-    url.search = "";
-    url.hash = "";
-
-    return url.toString();
-  } catch {
-    return "";
-  }
 }

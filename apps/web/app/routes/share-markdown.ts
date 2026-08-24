@@ -1,7 +1,7 @@
 import { readShareBySlug } from "@specdrop/api";
 import type { RouterContextProvider } from "react-router";
-import { dbContext } from "~/router-context";
-import { getMarkdownFileName } from "../share-file";
+import { getMarkdownFileName } from "~/features/shares/share-file";
+import { dbContext } from "~/lib/router-context";
 
 export async function loader({
   context,

@@ -1,8 +1,8 @@
 import type { BytemdPlugin } from "bytemd";
 import { createElement } from "react";
 import { describe, expect, it } from "vitest";
-import { rewriteInternalHeadingLinks } from "./markdown-plugins";
-import { MarkdownRenderer } from "./markdown-renderer";
+import { rewriteInternalHeadingLinks } from "./plugins";
+import { MarkdownRenderer } from "./renderer";
 
 type RehypeProcessor = Parameters<NonNullable<BytemdPlugin["rehype"]>>[0];
 type TestNode = {

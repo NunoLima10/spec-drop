@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { trpc } from "../trpc";
+import { trpc } from "~/lib/trpc";
 
 type HealthState =
   | { status: "loading" }

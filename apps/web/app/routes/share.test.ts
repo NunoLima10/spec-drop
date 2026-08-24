@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getReadingProgress } from "../reading-progress";
+import { getReadingProgress } from "~/features/share-read/reading-progress";
 import { getSharePageTitle, meta } from "./share";
 
 function getMetaContent(
