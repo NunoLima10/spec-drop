@@ -29,6 +29,7 @@
 ### Changed
 
 - Organize web code into feature-owned containers, components, share-domain helpers, and shared lib modules.
+- Split Worker rate-limit middleware and binding types out of the Worker entrypoint.
 - Split share API routing into schema, controller, and service modules.
 - Serve raw `.md` share URLs as plain UTF-8 text for AI client compatibility.
 - Remove the decorative frame around generated share QR codes.
