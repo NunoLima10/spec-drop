@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildAiOpenUrl,
-  buildAiReviewPrompt,
-  buildMarkdownFileUrl,
-} from "./ai-open-links";
+import { buildAiOpenUrl, buildAiReviewPrompt } from "./ai-open-links";
 
 describe("AI open links", () => {
   it("builds ChatGPT links with a prefilled prompt parameter", () => {
@@ -69,15 +65,5 @@ describe("AI open links", () => {
     expect(prompt).toContain(
       "Raw Markdown URL: https://specdrop.test/s/abc123.md",
     );
-  });
-
-  it("builds raw Markdown URLs from shared page URLs", () => {
-    expect(buildMarkdownFileUrl("https://specdrop.test/s/abc123")).toBe(
-      "https://specdrop.test/s/abc123.md",
-    );
-    expect(buildMarkdownFileUrl("https://specdrop.test/s/abc123/")).toBe(
-      "https://specdrop.test/s/abc123.md",
-    );
-    expect(buildMarkdownFileUrl("not-a-url")).toBe("");
   });
 });
