@@ -1,6 +1,7 @@
 import {
   ArrowRightIcon,
   ChevronDownIcon,
+  FilePenLineIcon,
   FileUpIcon,
   PlusIcon,
   Settings2Icon,
@@ -81,9 +82,11 @@ export function DropComposer({
       {hasContent ? (
         <LoadedComposer
           canCreate={canCreate}
+          content={content}
           deleteAfterRead={deleteAfterRead}
           error={error}
           expiresIn={expiresIn}
+          handleContentChange={handleContentChange}
           handleNewMarkdown={handleNewMarkdown}
           isCreating={isCreating}
           maxViews={maxViews}
@@ -186,9 +189,11 @@ function MarkdownIngress({
 
 function LoadedComposer({
   canCreate,
+  content,
   deleteAfterRead,
   error,
   expiresIn,
+  handleContentChange,
   handleNewMarkdown,
   isCreating,
   maxViews,
@@ -200,18 +205,50 @@ function LoadedComposer({
   title,
 }: Omit<
   ComposerProps,
-  | "content"
   | "handleDragLeave"
   | "handleDragOver"
   | "handleDrop"
-  | "handleContentChange"
   | "handleFileChange"
   | "handleSubmit"
   | "isDraggingFile"
 >) {
   return (
     <>
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+      <div className="mb-4 flex flex-col gap-3 border-[rgba(216,236,248,0.12)] border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#172033] text-[#98c0ef]">
+            <FilePenLineIcon aria-hidden="true" className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="font-medium text-white">Draft</p>
+            <p className="text-[#9da7ba] text-sm">
+              Edit the Markdown before creating a public URL.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex shrink-0 gap-2 sm:self-start">
+          <Button
+            className="h-10 border-[rgba(216,236,248,0.2)] bg-[#070914] px-3 text-[#d1e4fa] hover:bg-[#101328] hover:text-white"
+            onClick={handleNewMarkdown}
+            type="button"
+            variant="outline"
+          >
+            <PlusIcon aria-hidden="true" data-icon="inline-start" />
+            Drop new
+          </Button>
+          <Button
+            className="h-10 rounded-lg bg-[#663af3] px-4 text-white hover:bg-[#5930db] sm:min-w-40"
+            disabled={!canCreate}
+            type="submit"
+          >
+            {isCreating ? "Generating..." : "Generate URL"}
+            <ArrowRightIcon aria-hidden="true" data-icon="inline-end" />
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
         <div className="min-w-0 flex-1 lg:max-w-xl">
           <Label className="sr-only" htmlFor="share-title">
             Title
@@ -295,26 +332,20 @@ function LoadedComposer({
             </div>
           </details>
         </div>
+      </div>
 
-        <div className="flex shrink-0 gap-2 lg:justify-end">
-          <Button
-            className="h-10 border-[rgba(216,236,248,0.2)] bg-[#070914] px-3 text-[#d1e4fa] hover:bg-[#101328] hover:text-white"
-            onClick={handleNewMarkdown}
-            type="button"
-            variant="outline"
-          >
-            <PlusIcon aria-hidden="true" data-icon="inline-start" />
-            New
-          </Button>
-          <Button
-            className="h-10 rounded-lg bg-[#663af3] px-4 text-white hover:bg-[#5930db] sm:min-w-40"
-            disabled={!canCreate}
-            type="submit"
-          >
-            {isCreating ? "Generating..." : "Generate URL"}
-            <ArrowRightIcon aria-hidden="true" data-icon="inline-end" />
-          </Button>
-        </div>
+      <div className="mt-4">
+        <Label className="mb-2 text-[#d1e4fa]" htmlFor="markdown-draft">
+          Markdown draft
+        </Label>
+        <Textarea
+          aria-label="Edit Markdown draft"
+          className="max-h-[34rem] min-h-80 resize-y rounded-lg border-[rgba(216,236,248,0.22)] bg-[#05060f] px-4 py-3 font-mono text-[#d1e4fa] text-sm leading-6 placeholder:text-[#9da7ba]"
+          id="markdown-draft"
+          onChange={(event) => handleContentChange(event.currentTarget.value)}
+          spellCheck={false}
+          value={content}
+        />
       </div>
 
       {error ? (

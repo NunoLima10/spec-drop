@@ -44,6 +44,7 @@ export function ShareCreatePage() {
   const [copyStatus, setCopyStatus] = useState("");
   const [previewMode, setPreviewMode] = useState<PreviewMode>("render");
   const [shareHistory, setShareHistory] = useState<ShareHistoryItem[]>([]);
+  const isIdle = !content.trim() && !shareUrl;
   const canCreate = content.trim().length > 0 && !isCreating;
 
   useEffect(() => {
@@ -307,7 +308,7 @@ export function ShareCreatePage() {
           onRemove={handleRemoveHistoryItem}
         />
 
-        <HomeReadme />
+        {isIdle ? <HomeReadme /> : null}
       </section>
 
       <SiteFooter />

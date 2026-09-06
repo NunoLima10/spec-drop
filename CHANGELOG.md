@@ -4,7 +4,10 @@
 
 ### Added
 
+- Add browser-local scroll restoration for stable shared Markdown pages.
 - Add local browser history for stable generated and opened share links.
+- Add an editable Markdown draft composer before generating share URLs.
+- Document the edit-before-generate draft flow for reviewing Markdown before a public URL is created.
 - Add a README-style Markdown explanation to the home page.
 - Add raw Markdown `.md` URLs for shares and AI handoffs.
 - Add shared-page actions for opening Markdown review prompts in ChatGPT and Claude.
@@ -28,6 +31,8 @@
 
 ### Changed
 
+- Clear saved scroll positions when matching local share history entries are removed.
+- Show the rendered home README only on the idle upload state.
 - Organize web code into feature-owned containers, components, share-domain helpers, and shared lib modules.
 - Split Worker rate-limit middleware and binding types out of the Worker entrypoint.
 - Split share API routing into schema, controller, and service modules.
@@ -48,6 +53,7 @@
 
 ### Removed
 
+- Remove the raw Markdown action from the generated-share result.
 - Remove the unused shared config workspace package.
 - Remove redundant README intro copy, design intent panel, and raw storage step from the home page.
 

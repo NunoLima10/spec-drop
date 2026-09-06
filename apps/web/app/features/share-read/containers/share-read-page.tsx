@@ -15,6 +15,12 @@ import { ShareActions } from "../components/share-actions";
 import { ShareLoadingSkeleton } from "../components/share-loading-skeleton";
 import { ShareMetadataList } from "../components/share-metadata-list";
 import { estimateReadingTime } from "../share-metadata";
+import {
+  canPersistShareScrollPosition,
+  getRestorableScrollY,
+  readShareScrollPosition,
+  saveShareScrollPosition,
+} from "../share-scroll-position";
 import type { PreviewMode, ShareLoaderData, ShareState } from "../types";
 
 export function ShareReadPage() {
@@ -92,6 +98,99 @@ export function ShareReadPage() {
       source: "opened",
     });
   }, [sharePageUrl, slug, state]);
+
+  useEffect(() => {
+    if (
+      state.status !== "ready" ||
+      !slug ||
+      !canPersistShareScrollPosition(state.share)
+    ) {
+      return;
+    }
+
+    const position = readShareScrollPosition(slug);
+
+    if (!position) {
+      return;
+    }
+
+    let timeoutId = 0;
+    const frameId = window.requestAnimationFrame(() => {
+      const restoreScroll = () => {
+        window.scrollTo({
+          top: getRestorableScrollY({
+            position,
+            scrollHeight: document.documentElement.scrollHeight,
+            viewportHeight: window.innerHeight,
+          }),
+          behavior: "auto",
+        });
+      };
+
+      restoreScroll();
+      timeoutId = window.setTimeout(restoreScroll, 250);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, [slug, state]);
+
+  useEffect(() => {
+    if (
+      state.status !== "ready" ||
+      !slug ||
+      !canPersistShareScrollPosition(state.share)
+    ) {
+      return;
+    }
+
+    let animationFrameId = 0;
+    const shareSlug = slug;
+
+    function saveCurrentPosition() {
+      saveShareScrollPosition({
+        slug: shareSlug,
+        scrollY: window.scrollY,
+        scrollHeight: document.documentElement.scrollHeight,
+        viewportHeight: window.innerHeight,
+      });
+    }
+
+    function scheduleSaveCurrentPosition() {
+      if (animationFrameId) {
+        return;
+      }
+
+      animationFrameId = window.requestAnimationFrame(() => {
+        animationFrameId = 0;
+        saveCurrentPosition();
+      });
+    }
+
+    window.addEventListener("scroll", scheduleSaveCurrentPosition, {
+      passive: true,
+    });
+    window.addEventListener("resize", scheduleSaveCurrentPosition);
+    window.addEventListener("pagehide", saveCurrentPosition);
+    document.addEventListener("visibilitychange", saveCurrentPosition);
+
+    return () => {
+      if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+
+      saveCurrentPosition();
+      window.removeEventListener("scroll", scheduleSaveCurrentPosition);
+      window.removeEventListener("resize", scheduleSaveCurrentPosition);
+      window.removeEventListener("pagehide", saveCurrentPosition);
+      document.removeEventListener("visibilitychange", saveCurrentPosition);
+    };
+  }, [slug, state]);
 
   if (state.status === "loading") {
     return <ShareLoadingSkeleton />;

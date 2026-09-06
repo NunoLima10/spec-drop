@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { SHARE_SCROLL_STORAGE_PREFIX } from "~/features/share-read/share-scroll-position";
 import {
   canSaveShareHistory,
   clearShareHistory,
@@ -170,10 +171,31 @@ describe("share history", () => {
     }
 
     expect(readShareHistory(storage)).toHaveLength(SHARE_HISTORY_LIMIT);
+    storage.setItem(
+      `${SHARE_SCROLL_STORAGE_PREFIX}.share9`,
+      JSON.stringify({
+        scrollY: 600,
+        scrollHeight: 2000,
+        viewportHeight: 800,
+        updatedAt: "2026-08-21T10:09:00.000Z",
+      }),
+    );
     expect(removeShareHistoryItem("share9", storage)).toHaveLength(
       SHARE_HISTORY_LIMIT - 1,
     );
+    expect(storage.getItem(`${SHARE_SCROLL_STORAGE_PREFIX}.share9`)).toBeNull();
+
+    storage.setItem(
+      `${SHARE_SCROLL_STORAGE_PREFIX}.share8`,
+      JSON.stringify({
+        scrollY: 400,
+        scrollHeight: 1800,
+        viewportHeight: 800,
+        updatedAt: "2026-08-21T10:08:00.000Z",
+      }),
+    );
     expect(clearShareHistory(storage)).toEqual([]);
     expect(readShareHistory(storage)).toEqual([]);
+    expect(storage.getItem(`${SHARE_SCROLL_STORAGE_PREFIX}.share8`)).toBeNull();
   });
 });

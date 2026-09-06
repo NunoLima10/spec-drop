@@ -166,6 +166,8 @@ Deliverables:
 - Keep accessibility, readable technical typography, dark mode, code blocks, tables, Mermaid diagrams, and share controls intact.
 - Use concise, product-specific copy where it helps the interface feel clearer and more intentional.
 - Plan real SVG QR codes for generated share links and public share pages without storing QR output.
+- Document the edit-before-generate draft flow so dropped Markdown can be
+  reviewed and edited before any public URL is created.
 
 Exit criteria:
 
@@ -174,6 +176,8 @@ Exit criteria:
 - The redesign does not regress the upload-share-read loop, Markdown rendering, or ephemeral sharing controls.
 - Follow-up implementation work is clearly scoped around the selected visual direction.
 - The QR share code implementation plan is documented in `specs/qr-share-codes.md`.
+- The edit-before-generate implementation plan is documented in
+  `specs/edit-before-generate.md`.
 
 Status: active.
 
