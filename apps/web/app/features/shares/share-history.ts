@@ -1,3 +1,5 @@
+import { removeShareScrollPosition } from "~/features/share-read/share-scroll-position";
+
 export const SHARE_HISTORY_STORAGE_KEY = "specdrop.shareHistory.v1";
 export const SHARE_HISTORY_LIMIT = 8;
 
@@ -112,6 +114,7 @@ export function removeShareHistoryItem(
   );
 
   writeShareHistory(nextItems, storage);
+  removeShareScrollPosition(slug, storage);
 
   return nextItems;
 }
@@ -121,8 +124,13 @@ export function clearShareHistory(storage = getBrowserStorage()) {
     return [];
   }
 
+  const currentItems = readShareHistory(storage);
+
   try {
     storage.removeItem(SHARE_HISTORY_STORAGE_KEY);
+    for (const item of currentItems) {
+      removeShareScrollPosition(item.slug, storage);
+    }
   } catch {
     return readShareHistory(storage);
   }
