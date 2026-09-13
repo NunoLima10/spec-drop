@@ -70,8 +70,7 @@ Primary backend stack:
 - Zod for input validation.
 - Drizzle ORM for database access.
 - drizzle-kit for schema migration generation and migration execution.
-- postgres-js as the PostgreSQL driver.
-- PostgreSQL as the primary database.
+- Cloudflare D1 as the primary database.
 
 Backend responsibilities:
 
@@ -90,29 +89,23 @@ Hono should own the HTTP edge: request routing, middleware, CORS, health checks,
 Drizzle will be the ORM and migration layer. The setup should use a conventional Drizzle project layout:
 
 - `drizzle.config.ts` at the backend/package root.
-- `src/db/index.ts` creates the database client.
+- `src/db/index.ts` creates a database client from the Worker `DB` binding.
 - `src/db/schemas/index.ts` exports all schema modules.
 - `src/db/migrations` stores generated SQL migrations and Drizzle metadata.
-- `DATABASE_URL` drives local and deployed database connections.
+- `apps/web/wrangler.jsonc` defines the local and deployed D1 binding.
 
-PostgreSQL stores raw Markdown as text. The application should not store rendered HTML as the canonical document format.
+Cloudflare D1 stores raw Markdown as text. The application should not store rendered HTML as the canonical document format.
 
 Recommended Drizzle config:
 
 ```ts
-import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
-
-config({ path: ".env" });
 
 export default defineConfig({
   schema: "./src/db/schemas/index.ts",
   out: "./src/db/migrations",
-  dialect: "postgresql",
+  dialect: "sqlite",
   casing: "snake_case",
-  dbCredentials: {
-    url: process.env.DATABASE_URL || "",
-  },
   verbose: false,
   strict: true,
 });
@@ -121,21 +114,14 @@ export default defineConfig({
 Recommended database client:
 
 ```ts
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import * as schema from "./schemas";
+import { drizzle } from "drizzle-orm/d1";
+import * as schema from "./schemas/index.js";
 
-const client = postgres(process.env.DATABASE_URL!, {
-  max: 10,
-  idle_timeout: 60,
-  connect_timeout: 30,
-  transform: {
-    undefined: null,
-  },
-});
+export function createDb(database: D1Database) {
+  return drizzle(database, { schema });
+}
 
-export const db = drizzle(client, { schema });
-export type DB = typeof db;
+export type DB = ReturnType<typeof createDb>;
 export { schema };
 ```
 
@@ -234,48 +220,16 @@ HTTP routes may wrap or expose tRPC procedures, but the client should consume th
 
 Preferred deployment direction:
 
-- Web and API: Cloudflare Workers when PostgreSQL connectivity is confirmed for the chosen hosting setup.
-- Database: managed PostgreSQL.
+- Web and API: Cloudflare Workers.
+- Database: Cloudflare D1, accessed through the Worker's `DB` binding.
 - Static assets: Vite build output served through the app deployment.
 - Future files/images: S3-compatible object storage.
 - Scheduled cleanup: cron worker or scheduled job for expired shares.
 
-If Cloudflare Workers complicates direct PostgreSQL connectivity during MVP implementation, the fallback should be a Node-compatible deployment target while keeping Hono, React Router, tRPC, Drizzle, and pnpm unchanged.
-
-## Local Docker
-
-The local database should use Docker Compose with a focused PostgreSQL service for development.
-
-Recommended services for MVP:
-
-```yaml
-services:
-  postgres:
-    image: postgres:17
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: spec_drop
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 2s
-      timeout: 5s
-      retries: 10
-      start_period: 10s
-
-volumes:
-  postgres_data:
-```
-
-Optional future local services:
-
-- Mailpit, if email flows are added.
-- Observability services, if local tracing or metrics become useful.
+Local development uses Wrangler's local D1 database. No Docker database service
+or connection URL is required. Apply migrations with
+`pnpm d1:migrations:local`; deployed migrations use
+`pnpm d1:migrations:remote`.
 
 ## Development Tooling
 
@@ -297,10 +251,10 @@ pnpm typecheck
 pnpm lint
 pnpm test
 pnpm db:generate
-pnpm db:migrate
-pnpm db:push
 pnpm db:check
 pnpm db:studio
+pnpm d1:migrations:local
+pnpm d1:migrations:remote
 ```
 
 Recommended backend package scripts:
@@ -308,28 +262,19 @@ Recommended backend package scripts:
 ```json
 {
   "db:generate": "drizzle-kit generate",
-  "db:migrate": "drizzle-kit migrate",
-  "db:push": "drizzle-kit push",
   "db:studio": "drizzle-kit studio",
-  "db:check": "drizzle-kit check",
-  "db:seed:dev": "tsx src/db/seeds/dev.ts",
-  "api:reset": "docker compose down -v && docker compose up -d && pnpm db:generate && pnpm db:migrate && pnpm db:seed:dev && pnpm dev"
+  "db:check": "drizzle-kit check"
 }
 ```
 
-Recommended Make targets:
+Recommended root database scripts:
 
 ```text
-make docker-up
-make docker-down
-make docker-reset
-make db-generate
-make db-migrate
-make db-push
-make db-seed
-make db-studio
-make db-check
-make db-reset
+pnpm db:generate
+pnpm db:check
+pnpm db:studio
+pnpm d1:migrations:local
+pnpm d1:migrations:remote
 ```
 
 ## Non-Goals For MVP

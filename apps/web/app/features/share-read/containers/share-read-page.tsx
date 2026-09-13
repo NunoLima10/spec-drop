@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLoaderData, useParams } from "react-router";
+import { SiteFooter } from "~/components/site-footer";
 import { StatusPage } from "~/components/status-page";
 import { downloadMarkdownFile } from "~/features/shares/share-file";
 import { saveShareHistoryItem } from "~/features/shares/share-history";
 import { buildMarkdownFileUrl } from "~/features/shares/share-links";
+import { useAnalytics } from "~/lib/analytics/product-analytics";
 import { copyTextToClipboard } from "~/lib/browser/clipboard";
 import type { MarkdownOutlineItem } from "~/lib/markdown/plugins";
 import { MarkdownRenderer } from "~/lib/markdown/renderer";
@@ -24,7 +26,9 @@ import {
 import type { PreviewMode, ShareLoaderData, ShareState } from "../types";
 
 export function ShareReadPage() {
+  const trackEvent = useAnalytics();
   const { slug } = useParams();
+  const trackedOpenedSlug = useRef<string | null>(null);
   const [state, setState] = useState<ShareState>({ status: "loading" });
   const [outline, setOutline] = useState<MarkdownOutlineItem[]>([]);
   const [previewMode, setPreviewMode] = useState<PreviewMode>("render");
@@ -97,7 +101,12 @@ export function ShareReadPage() {
       maxViews: state.share.maxViews,
       source: "opened",
     });
-  }, [sharePageUrl, slug, state]);
+
+    if (trackedOpenedSlug.current !== slug) {
+      trackedOpenedSlug.current = slug;
+      trackEvent("share opened");
+    }
+  }, [sharePageUrl, slug, state, trackEvent]);
 
   useEffect(() => {
     if (
@@ -215,10 +224,15 @@ export function ShareReadPage() {
   async function handleCopyMarkdown() {
     const didCopy = await copyTextToClipboard(share.content);
     setCopyStatus(didCopy ? "Copied" : "Copy failed");
+
+    if (didCopy) {
+      trackEvent("markdown copied");
+    }
   }
 
   function handleDownloadMarkdown() {
     downloadMarkdownFile({ content: share.content, title });
+    trackEvent("markdown downloaded");
   }
 
   return (
@@ -292,6 +306,7 @@ export function ShareReadPage() {
             ) : null}
           </div>
         </div>
+        <SiteFooter />
       </main>
     </>
   );

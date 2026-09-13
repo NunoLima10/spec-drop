@@ -51,7 +51,7 @@ The reading page must treat developer documentation as a first-class medium. Typ
 
 ### Raw Markdown as the Source of Truth
 
-The backend stores Markdown as text in PostgreSQL. Rendering happens through a controlled Markdown pipeline on the web frontend, using sanitization and strict validation instead of storing generated HTML.
+The backend stores Markdown as text in Cloudflare D1. Rendering happens through a controlled Markdown pipeline on the web frontend, using sanitization and strict validation instead of storing generated HTML.
 
 ### Ephemeral First
 

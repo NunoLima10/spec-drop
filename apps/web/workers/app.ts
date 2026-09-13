@@ -3,7 +3,12 @@ import { appRouter, cleanupExpiredShares } from "@specdrop/api";
 import { createDb } from "@specdrop/db";
 import { Hono } from "hono";
 import { createRequestHandler, RouterContextProvider } from "react-router";
-import { dbContext, originContext } from "../app/lib/router-context";
+import { getPostHogPublicConfig } from "../app/lib/analytics/posthog-config";
+import {
+  dbContext,
+  originContext,
+  postHogConfigContext,
+} from "../app/lib/router-context";
 import type { WorkerBindings } from "./bindings";
 import {
   enforceRawMarkdownReadRateLimit,
@@ -36,6 +41,13 @@ app.get("*", (context) => {
 
   loadContext.set(dbContext, createDb(context.env.DB));
   loadContext.set(originContext, origin);
+  loadContext.set(
+    postHogConfigContext,
+    getPostHogPublicConfig(
+      context.env.POSTHOG_PROJECT_TOKEN,
+      context.env.POSTHOG_HOST,
+    ),
+  );
 
   return requestHandler(context.req.raw, loadContext);
 });

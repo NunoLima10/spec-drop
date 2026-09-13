@@ -4,6 +4,8 @@
 
 ### Added
 
+- Add cookieless PostHog audience measurement with privacy-safe product events and a public telemetry inventory.
+- Add hosted-service Terms and Privacy pages.
 - Add browser-local scroll restoration for stable shared Markdown pages.
 - Add local browser history for stable generated and opened share links.
 - Add an editable Markdown draft composer before generating share URLs.
@@ -31,6 +33,7 @@
 
 ### Changed
 
+- Align the source-of-truth architecture and contributor guidance with Cloudflare D1.
 - Clear saved scroll positions when matching local share history entries are removed.
 - Show the rendered home README only on the idle upload state.
 - Organize web code into feature-owned containers, components, share-domain helpers, and shared lib modules.
@@ -59,6 +62,7 @@
 
 ### Fixed
 
+- Capture PostHog page views during client-side navigation and document hosted Worker configuration.
 - Validate max-view share input before submitting create-share requests.
 - Prevent shared Markdown page scrolling from re-rendering Mermaid diagrams.
 - Fix pasted Markdown input capture and defer shared Markdown download cleanup.

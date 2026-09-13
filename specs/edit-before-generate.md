@@ -82,7 +82,7 @@ Keep `share.create` as the only persistence boundary:
 - Output remains the generated slug, URL, and metadata.
 - The `shares` table continues to store raw Markdown in `content`.
 - The app should not store generated HTML.
-- The app should not store draft Markdown in PostgreSQL before generation.
+- The app should not store draft Markdown in Cloudflare D1 before generation.
 
 Backend changes should only be needed if current validation or API contracts make
 the final draft submit impossible. The intended change is primarily frontend

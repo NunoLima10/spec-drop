@@ -10,7 +10,7 @@ documentation as fast, polished, shareable web pages.
 The product loop is:
 
 1. Upload or drop a Markdown file.
-2. Store the raw Markdown in PostgreSQL.
+2. Store the raw Markdown in Cloudflare D1.
 3. Render it safely in the web UI.
 4. Share the generated URL.
 
@@ -20,7 +20,7 @@ The product loop is:
 - Monorepo layout: `apps/` and `packages/`.
 - Frontend: React, React Router, Vite, Tailwind CSS.
 - Backend: Hono and tRPC.
-- Data layer: Drizzle ORM, drizzle-kit, postgres-js, PostgreSQL.
+- Data layer: Drizzle ORM, drizzle-kit, Cloudflare D1.
 - Markdown: raw Markdown storage with sanitized frontend rendering.
 - Tooling: TypeScript strict mode, Biome, Vitest, Playwright where useful.
 

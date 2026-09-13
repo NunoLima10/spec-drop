@@ -1,5 +1,6 @@
 import type { SVGProps } from "react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 const authorUrl = "https://nunolima.cv/";
 const repositoryUrl = "https://github.com/NunoLima10/spec-drop";
@@ -55,16 +56,24 @@ export function SiteFooter() {
           </a>
         </p>
 
-        <a
-          aria-label="Open NunoLima10/spec-drop on GitHub"
-          className="inline-flex h-9 w-fit items-center gap-2 rounded-lg border border-[rgba(216,236,248,0.18)] bg-transparent px-3 font-medium text-[#d8ecf8] transition hover:border-[rgba(216,236,248,0.32)] hover:bg-white/5 hover:text-white"
-          href={repositoryUrl}
-          rel="noreferrer"
-          target="_blank"
-        >
-          <GithubIcon aria-hidden="true" className="size-4" />
-          <span>{starCount === null ? "0" : formatStarCount(starCount)}</span>
-        </a>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <Link className="hover:text-white hover:underline" to="/terms">
+            Terms
+          </Link>
+          <Link className="hover:text-white hover:underline" to="/privacy">
+            Privacy
+          </Link>
+          <a
+            aria-label="Open NunoLima10/spec-drop on GitHub"
+            className="inline-flex h-9 w-fit items-center gap-2 rounded-lg border border-[rgba(216,236,248,0.18)] bg-transparent px-3 font-medium text-[#d8ecf8] transition hover:border-[rgba(216,236,248,0.32)] hover:bg-white/5 hover:text-white"
+            href={repositoryUrl}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <GithubIcon aria-hidden="true" className="size-4" />
+            <span>{starCount === null ? "0" : formatStarCount(starCount)}</span>
+          </a>
+        </div>
       </div>
     </footer>
   );

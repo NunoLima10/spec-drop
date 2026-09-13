@@ -9,6 +9,7 @@ import {
   type ShareHistoryItem,
   saveShareHistoryItem,
 } from "~/features/shares/share-history";
+import { useAnalytics } from "~/lib/analytics/product-analytics";
 import { copyTextToClipboard } from "~/lib/browser/clipboard";
 import { trpc } from "~/lib/trpc";
 import { DropComposer } from "../components/drop-composer";
@@ -29,6 +30,7 @@ import {
 } from "../upload-utils";
 
 export function ShareCreatePage() {
+  const trackEvent = useAnalytics();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [expiresIn, setExpiresIn] = useState<ShareExpiration>("never");
@@ -149,6 +151,7 @@ export function ShareCreatePage() {
     const clientError = getCreateShareClientError({ content, maxViews });
 
     if (clientError) {
+      trackEvent("share creation failed");
       setError(clientError);
       return;
     }
@@ -183,7 +186,9 @@ export function ShareCreatePage() {
           source: "generated",
         }),
       );
+      trackEvent("share created");
     } catch (createError) {
+      trackEvent("share creation failed");
       setError(
         createError instanceof Error
           ? createError.message
@@ -201,6 +206,10 @@ export function ShareCreatePage() {
 
     const didCopy = await copyTextToClipboard(shareUrl);
     setCopyStatus(didCopy ? "Copied" : "Copy failed");
+
+    if (didCopy) {
+      trackEvent("share link copied");
+    }
   }
 
   async function handleDeleteShare() {
@@ -213,6 +222,7 @@ export function ShareCreatePage() {
 
     try {
       await trpc.share.delete.mutate({ slug: shareSlug });
+      trackEvent("share deleted");
       setShareHistory(removeShareHistoryItem(shareSlug));
       handleNewMarkdown();
     } catch (deleteError) {

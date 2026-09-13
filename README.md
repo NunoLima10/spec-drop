@@ -66,6 +66,46 @@ Stop the local app:
 Use `Ctrl+C` to stop the app process. No local Docker service is required for
 the D1 setup.
 
+## Optional PostHog analytics
+
+SpecsDrop works without PostHog. Analytics is enabled only when both variables
+below are configured. For local development, add them to the repository-root
+`.env` file:
+
+```env
+POSTHOG_PROJECT_TOKEN=your_project_token
+POSTHOG_HOST=https://your-posthog-host
+```
+
+Before enabling analytics, configure the PostHog project to use **Cookieless
+server hash mode** and disable stored IP capture. Restart the development server
+after changing `.env`.
+
+For the hosted Cloudflare Worker, set the same values as Worker secrets before
+deploying. Run these commands from the repository root and enter each value when
+Wrangler prompts:
+
+```sh
+pnpm --filter @specdrop/web exec wrangler secret put POSTHOG_PROJECT_TOKEN
+pnpm --filter @specdrop/web exec wrangler secret put POSTHOG_HOST
+pnpm run web:deploy
+```
+
+The hosted app keeps analytics disabled if either binding is missing. Configure
+the secrets separately for each Wrangler environment if deployment environments
+are added later. These values are delivered to the browser to initialize
+PostHog, so do not use a private PostHog personal API key here; use only the
+project token and ingestion host.
+
+The integration does not identify users, create person profiles, use analytics
+cookies, or record sessions. It sends page views, page leaves, and a small typed
+list of product events such as `share created`, `share opened`, and `markdown
+downloaded`. Custom events contain only the event name; Markdown, document
+titles, share URLs, slugs, and error messages are never included.
+
+See [`specs/analytics.md`](specs/analytics.md) for the complete event inventory,
+privacy boundaries, and accuracy limitations.
+
 ## Checks
 
 ```sh
