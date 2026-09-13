@@ -59,6 +59,54 @@ html.specdrop-mermaid-fullscreen-open {
   overflow: hidden;
 }
 
+.legal-copy {
+  color: #c7d3ea;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.legal-copy section + section {
+  border-top: 1px solid rgba(216, 236, 248, 0.12);
+  margin-top: 2rem;
+  padding-top: 2rem;
+}
+
+.legal-copy h2 {
+  color: #f8fbff;
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+}
+
+.legal-copy h3 {
+  color: #d8ecf8;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  margin-top: 1.25rem;
+}
+
+.legal-copy p + p,
+.legal-copy ul + p {
+  margin-top: 0.85rem;
+}
+
+.legal-copy ul {
+  list-style: disc;
+  margin: 0.75rem 0 0.75rem 1.25rem;
+}
+
+.legal-copy li + li {
+  margin-top: 0.4rem;
+}
+
+.legal-copy a {
+  color: #9fd8f7;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

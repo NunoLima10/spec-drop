@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLoaderData, useParams } from "react-router";
+import { SiteFooter } from "~/components/site-footer";
 import { StatusPage } from "~/components/status-page";
 import { downloadMarkdownFile } from "~/features/shares/share-file";
 import { saveShareHistoryItem } from "~/features/shares/share-history";
@@ -292,6 +293,7 @@ export function ShareReadPage() {
             ) : null}
           </div>
         </div>
+        <SiteFooter />
       </main>
     </>
   );

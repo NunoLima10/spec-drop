@@ -4,6 +4,7 @@
 
 ### Added
 
+- Add hosted-service Terms and Privacy pages.
 - Add browser-local scroll restoration for stable shared Markdown pages.
 - Add local browser history for stable generated and opened share links.
 - Add an editable Markdown draft composer before generating share URLs.
