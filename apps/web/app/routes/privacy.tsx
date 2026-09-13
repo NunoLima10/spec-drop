@@ -42,36 +42,43 @@ export default function Privacy() {
         <p>
           For non-expiring, non-view-limited shares, the browser can store
           recent share links, titles, activity times, and reading positions in
-          local storage. The analytics choice is also stored locally. This
-          information stays in that browser unless you share it or browser
-          behavior, extensions, or device synchronization copy it elsewhere. You
-          can clear it through the app’s history controls or your browser’s
-          site-data settings.
+          local storage. This information stays in that browser unless you share
+          it or browser behavior, extensions, or device synchronization copy it
+          elsewhere. You can clear it through the app’s history controls or your
+          browser’s site-data settings. SpecsDrop does not store a PostHog
+          analytics identifier in cookies, local storage, or session storage.
         </p>
 
         <h3>Product analytics</h3>
         <p>
-          If PostHog is configured and you choose “Allow analytics,” SpecsDrop
-          sends page-view and page-leave events to PostHog. Events can include a
-          session identifier and standard technical context such as timestamp,
+          When PostHog is configured, SpecsDrop uses its cookieless server-hash
+          mode for limited audience measurement. It sends page-view, page-leave,
+          share-created, share-creation-failed, share-opened, link-copy,
+          Markdown-copy, Markdown-download, and share-deletion events. Events
+          can include a timestamp and standard technical context such as
           browser, operating system, device type, language, and screen or
-          viewport size. PostHog or its network providers may also process an IP
-          address when receiving a request.
+          viewport size.
         </p>
         <p>
-          Analytics is used only for product analysis: understanding aggregate
-          use, finding friction, prioritizing improvements, and measuring
-          whether the app works well. SpecsDrop disables autocapture and session
-          recording, does not create PostHog person profiles, uses session
-          storage for the analytics identifier, respects Do Not Track, and
-          excludes page URLs, paths, referrers, referring domains, and page
-          titles from event properties. Markdown content, document titles, and
-          share slugs must not be sent to PostHog.
+          PostHog processes the request IP address, user agent, hostname, a
+          project identifier, and a rotating daily salt to calculate an
+          irreversible daily identifier on its servers. The salt is changed and
+          deleted daily, stored IP capture must be disabled for the project, and
+          the resulting identifier is not designed to recognize a browser across
+          different days. Daily audience counts are therefore estimates, not a
+          persistent record of a person or an exact returning-user measurement.
         </p>
         <p>
-          Declining analytics does not prevent use of SpecsDrop. You can also
-          enable Do Not Track in your browser.
+          Analytics is used only to understand aggregate adoption and core
+          product use. SpecsDrop disables autocapture, session recording, person
+          profiles, surveys, heatmaps, performance capture, dead-click capture,
+          and exception capture. It respects supported Do Not Track signals and
+          allowlists the event names that may leave the browser. Markdown
+          content, document titles, filenames, share slugs, share URLs,
+          referrers, page titles, and deletion credentials must not be sent to
+          PostHog.
         </p>
+
         <h3>Cloudflare and operational data</h3>
         <p>
           SpecsDrop runs in a Cloudflare account using Workers and D1, with
@@ -102,15 +109,17 @@ export default function Privacy() {
           <li>operate, secure, debug, and protect the hosted service;</li>
           <li>prevent abuse and enforce rate limits and these Terms; and</li>
           <li>
-            with consent, analyze product usage and improve SpecsDrop through
-            privacy-limited PostHog events.
+            measure aggregate adoption and improve SpecsDrop through limited,
+            cookieless PostHog events.
           </li>
         </ul>
         <p>
           Where applicable law requires a legal basis, service data is processed
           to provide the feature you request, security and operational data is
           processed for legitimate interests in protecting and maintaining the
-          service, and optional PostHog analytics is based on your consent.
+          service, and cookieless audience measurement is processed for the
+          legitimate interest of understanding basic product adoption with the
+          safeguards described above.
         </p>
       </section>
 
@@ -118,8 +127,8 @@ export default function Privacy() {
         <h2>5. Sharing and processors</h2>
         <p>
           Data is disclosed to Cloudflare as the hosting, database, network,
-          security, and observability provider, and to PostHog only when
-          optional analytics is enabled and accepted. Information may also be
+          security, and observability provider, and to PostHog when the operator
+          configures cookieless audience measurement. Information may also be
           disclosed when reasonably necessary to comply with law, protect users
           or the service, investigate abuse, or establish or defend legal
           claims. We do not sell personal information or use it for targeted
@@ -156,9 +165,10 @@ export default function Privacy() {
           it. A “never” share has no automatic expiry. The current application
           uses logical deletion, so deletion makes a share unavailable but may
           not immediately remove every database row or residual copy. Provider
-          logs, backups, caches, and analytics are retained according to the
-          applicable configuration and provider policy, then deleted or
-          aggregated when no longer needed.
+          logs, backups, caches, and aggregate analytics are retained according
+          to the applicable configuration and provider policy, then deleted or
+          aggregated when no longer needed. The cookieless analytics identifier
+          rotates daily and is not intended to link activity across days.
         </p>
       </section>
 
@@ -179,11 +189,12 @@ export default function Privacy() {
         <p>
           Depending on where you live, you may have rights to access, correct,
           delete, restrict, or object to processing of personal information, or
-          withdraw consent. Analytics consent can be declined or revisited
-          without losing core functionality. Because SpecsDrop has no accounts,
-          the operator may need the exact share URL and other reasonable details
-          to locate a record, and may be unable to verify that a requester owns
-          a public share.
+          withdraw consent where processing relies on consent. Supported Do Not
+          Track signals are respected. Because SpecsDrop has no accounts or
+          persistent analytics identity, the operator may need the exact share
+          URL and other reasonable details to locate a share record and
+          generally cannot associate cookieless analytics events with a
+          particular person.
         </p>
       </section>
 

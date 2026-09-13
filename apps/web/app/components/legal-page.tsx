@@ -30,7 +30,7 @@ export function LegalPage({
 
         <header className="mt-10 border-[rgba(216,236,248,0.16)] border-b pb-8">
           <p className="text-[#9fd8f7] text-sm uppercase tracking-wide">
-            Last updated September 12, 2026
+            Last updated September 13, 2026
           </p>
           <h1 className="mt-3 bg-[linear-gradient(0deg,#f8fbff_0%,#9fd8f7_100%)] bg-clip-text font-medium text-4xl text-transparent leading-tight sm:text-5xl">
             {title}

@@ -126,8 +126,9 @@ export default function Terms() {
         <p>
           The hosted instance depends on Cloudflare for application delivery,
           storage, security, rate limiting, and operational telemetry, and may
-          use PostHog for consent-based product analytics. Those providers apply
-          their own terms and privacy practices to their services.
+          use PostHog for limited cookieless audience measurement and product
+          events as described in the Privacy Policy. Those providers apply their
+          own terms and privacy practices to their services.
         </p>
       </section>
 
@@ -142,8 +143,9 @@ export default function Terms() {
         </p>
         <p>
           For maximum control and privacy, we recommend self-hosting SpecsDrop
-          in your own Cloudflare account and reviewing or disabling optional
-          analytics before deployment.
+          in your own Cloudflare account and reviewing, correctly configuring,
+          or disabling analytics before deployment. A self-hosted operator is
+          responsible for ensuring that its notices match its actual deployment.
         </p>
       </section>
 

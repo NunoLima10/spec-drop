@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { RouterContextProvider } from "react-router";
 import {
   isRouteErrorResponse,
   Links,
@@ -6,10 +7,19 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
   useRouteError,
 } from "react-router";
 import { StatusPage } from "~/components/status-page";
+import { SpecsDropPostHogProvider } from "~/lib/analytics/posthog-provider";
+import { postHogConfigContext } from "~/lib/router-context";
 import "./app.css";
+
+export function loader({ context }: { context: RouterContextProvider }) {
+  return {
+    postHogConfig: context.get(postHogConfigContext),
+  };
+}
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
@@ -30,7 +40,13 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const { postHogConfig } = useLoaderData<typeof loader>();
+
+  return (
+    <SpecsDropPostHogProvider config={postHogConfig}>
+      <Outlet />
+    </SpecsDropPostHogProvider>
+  );
 }
 
 export function ErrorBoundary() {

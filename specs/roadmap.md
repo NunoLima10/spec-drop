@@ -14,9 +14,9 @@ Deliverables:
 - Add `packages/markdown`.
 - Wire React Router, Hono, and Vite into the web app.
 - Wire tRPC between the frontend and backend.
-- Add Drizzle, drizzle-kit, postgres-js, and initial PostgreSQL connection.
-- Add Docker Compose with a local PostgreSQL service.
-- Add Make targets for Docker and database workflow.
+- Add Drizzle, drizzle-kit, and an initial Cloudflare D1 binding.
+- Add local D1 migration support through Wrangler.
+- Add root scripts for the local and remote D1 migration workflow.
 - Add basic environment validation.
 - Add root scripts for dev, build, typecheck, lint, test, and Drizzle commands.
 - Add open-source project files: license, readme, contributing guide, changelog, and agent guidance.
@@ -25,8 +25,8 @@ Exit criteria:
 
 - `pnpm dev` starts the local app.
 - Frontend can call a typed tRPC health procedure.
-- Drizzle can connect to the local Docker PostgreSQL database.
-- `pnpm db:generate`, `pnpm db:migrate`, and `pnpm db:studio` are wired.
+- Drizzle can connect to the local D1 database exposed by Wrangler.
+- `pnpm db:generate`, `pnpm d1:migrations:local`, and `pnpm db:studio` are wired.
 - The project has a clear package structure that future features can build on.
 - Contributors can understand setup, architecture, and changelog expectations from the repository docs.
 
@@ -249,7 +249,7 @@ The first production milestone should include only:
 - React Router web app.
 - Hono backend runtime.
 - tRPC API.
-- Drizzle and PostgreSQL.
+- Drizzle and Cloudflare D1.
 - Markdown create/read/delete.
 - Public share page.
 - Secure Markdown rendering.
