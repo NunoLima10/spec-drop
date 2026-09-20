@@ -1,3 +1,4 @@
+import { ChevronUpIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLoaderData, useParams } from "react-router";
 import { SiteFooter } from "~/components/site-footer";
@@ -33,6 +34,7 @@ export function ShareReadPage() {
   const [outline, setOutline] = useState<MarkdownOutlineItem[]>([]);
   const [previewMode, setPreviewMode] = useState<PreviewMode>("render");
   const [copyStatus, setCopyStatus] = useState("");
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const { canonicalUrl: sharePageUrl } = useLoaderData<ShareLoaderData>();
   const handleOutlineChange = useCallback((items: MarkdownOutlineItem[]) => {
     setOutline((currentItems) =>
@@ -201,6 +203,15 @@ export function ShareReadPage() {
     };
   }, [slug, state]);
 
+  useEffect(() => {
+    function handleScroll() {
+      setShowScrollTop(window.scrollY > 400);
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   if (state.status === "loading") {
     return <ShareLoadingSkeleton />;
   }
@@ -308,6 +319,14 @@ export function ShareReadPage() {
         </div>
         <SiteFooter />
       </main>
+      <button
+        type="button"
+        aria-label="Scroll to top"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className={`fixed right-6 bottom-6 z-50 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[rgba(216,236,248,0.16)] bg-[#05060f]/80 text-[#d8ecf8] shadow-lg backdrop-blur transition-all duration-300 hover:bg-[#151829] ${showScrollTop ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"}`}
+      >
+        <ChevronUpIcon className="h-5 w-5" />
+      </button>
     </>
   );
 }
