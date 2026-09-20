@@ -4,6 +4,7 @@
 
 ### Added
 
+- Add a floating smooth scroll-to-top button on shared Markdown reading pages.
 - Add cookieless PostHog audience measurement with privacy-safe product events and a public telemetry inventory.
 - Add hosted-service Terms and Privacy pages.
 - Add browser-local scroll restoration for stable shared Markdown pages.
